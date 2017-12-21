@@ -20,4 +20,4 @@
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
 srun -n 1 python /n/regal/eisenstein_lab/stacchella/halo_model/scripts/run_make_SFH.py
-
+srun -n 1 python /n/regal/eisenstein_lab/stacchella/halo_model/scripts/run_derive_SP.py
