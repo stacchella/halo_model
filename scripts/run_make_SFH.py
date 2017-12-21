@@ -27,7 +27,7 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 # set parameters
 
 DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-efficency_filename = 'Calibration/epsilon.npy'
+efficency_filename = 'calibration/epsilon.npy'
 SFH_type_option = 'random'
 filename_SFH_file = 'SFH_z4_random.hdf5'
 
