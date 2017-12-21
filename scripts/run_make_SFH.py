@@ -52,7 +52,7 @@ t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
 # loop over all halos
 
-for idx_h in range(len(M_table_in))[::1000]:
+for idx_h in range(len(M_table_in)):
     print 'progress (%): ', round(100.0*idx_h/len(M_table_in), 3)
     time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
     if (idx_h == 0):

@@ -129,7 +129,7 @@ print dict_all_combinations
 
 # iterate over all models and compute luminosities
 
-for ii_model in range(len(dict_all_combinations))[:3]:
+for ii_model in range(len(dict_all_combinations)):
     model_dict = dict_all_combinations[ii_model][0]
     print '================================================='
     print 'working on model with: ', model_dict['logzsol']
