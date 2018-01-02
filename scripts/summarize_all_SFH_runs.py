@@ -47,9 +47,10 @@ for file_name in list_files_all:
         time_list = array_now
     elif (counter == 0) and ('_t_' not in file_name):
         SFH_table_SFR = array_now
+        counter += 1
     else:
         SFH_table_SFR = np.vstack([SFH_table_SFR, array_now])
-    counter += 1
+        counter += 1
 
 
 # get dark matter accretion history
