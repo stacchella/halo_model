@@ -44,20 +44,14 @@ time_list = None
 
 for file_name in list_files_all:
     if ('_t_' in file_name) and (time_list is None):
-        array_now = np.load(file_name)
-        time_list = array_now
+        time_list = np.load(file_name)
     elif (counter == 0) and ('_t_' not in file_name):
-        array_now = np.load(file_name).tolist()
-        SFH_table_SFR = array_now
+        SFH_table_SFR = np.load(file_name)
         counter += 1
     elif ('_t_' not in file_name):
-        array_now = np.load(file_name).tolist()
-        SFH_table_SFR = SFH_table_SFR + array_now
+        SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
         counter += 1
     print 'progress (%): ', round(100.0*counter/(0.5*len(list_files_all)), 3)
-
-
-SFH_table_SFR = np.array(SFH_table_SFR)
 
 
 # get dark matter accretion history
