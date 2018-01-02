@@ -10,7 +10,6 @@ January 2, 2018   : update parallel
 
 import numpy as np
 import os
-import h5py
 
 import read_in_halo_cat
 import read_in_efficency
@@ -21,8 +20,8 @@ from astropy.cosmology import WMAP7 as cosmo
 
 # define parameters
 
-run_params = {'number_of_bins' = 20,  # this gives number of cores we run on
-              'idx_halo_key' = 0.0
+run_params = {'number_of_bins': 20,  # this gives number of cores we run on
+              'idx_halo_key': 0.0,  # iteration variable
               }
 
 
