@@ -95,11 +95,8 @@ for idx_h in idx_halo_considered:
 
 # save SFH as numpy file (in a new directory), later combine all these files
 
-def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key=1.0, **kwargs):
-    print 'index saving now... ', idx_halo_key
-    np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(idx_halo_key))-1) + '.npy', SFH_table_SFR)
-    np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(idx_halo_key))-1) + '.npy', time_list)
+np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.npy', SFH_table_SFR)
+np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(args.idx_halo_key))-1) + '.npy', time_list)
 
 
-save_SFH(SFH_table_SFR, time_list, **run_params)
 

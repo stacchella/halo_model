@@ -19,5 +19,7 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
-srun -n 1 python /n/regal/eisenstein_lab/stacchella/halo_model/scripts/run_derive_SP.py
+srun -n 1 python /n/regal/eisenstein_lab/stacchella/halo_model/scripts/run_derive_SP.py \
+--number_of_bins=200 \
+--idx_halo_key="${SLURM_ARRAY_TASK_ID}"
 

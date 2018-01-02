@@ -31,6 +31,7 @@ Things to keep in mind:
 
 import numpy as np
 import os
+import argparse
 import h5py
 import fsps
 import itertools
@@ -53,6 +54,19 @@ filename_SP_file = 'SFH_z4_random_with_L.hdf5'
 idx_every_other = 2  # fundge factor so that SFH setting works
 
 
+# read in command line arguments
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--number_of_bins", type=int, help="number of cores")
+parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
+args = parser.parse_args()
+
+
+run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cores we run on
+              'idx_halo_key': args.idx_halo_key,  # iteration variable
+              }
+
+
 # read in SFH
 
 SFH_file = h5py.File(path_SFH_cat + filename_SFH_file, 'r')
@@ -63,12 +77,12 @@ SFH_SFR = SFH_file['SFH/SFH_SFR'][:]
 # set up new hdf5 file for saving luminosities optained from SFH
 
 try:
-    os.remove(path_SP_cat + filename_SP_file)
+    os.remove(path_SP_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SP_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5')
 except OSError:
     pass
 
 
-lum_file = h5py.File(path_SP_cat + filename_SP_file, 'w')
+lum_file = h5py.File(path_SP_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SP_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5', 'w')
 # add SFH
 grp_SFH = lum_file.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
@@ -128,6 +142,18 @@ print 'this is the grid for the SP:'
 print dict_all_combinations
 
 
+# split halo in bins
+
+def get_halo_ids(number_of_bins, idx_halo_key=1.0, **kwargs):
+    idx_all_halos = range(SFH_SFR.shape[0])
+    idx_bins_all_halos = np.array_split(idx_all_halos, number_of_bins)
+    print idx_bins_all_halos[int(float(idx_halo_key))-1]
+    return(idx_bins_all_halos[int(float(idx_halo_key))-1])  # -1 since slurm counts from 1 (and not from 0)
+
+
+idx_halo_considered = get_halo_ids(**run_params)
+
+
 # iterate over all models and compute luminosities
 
 for ii_model in range(len(dict_all_combinations)):
@@ -140,8 +166,10 @@ for ii_model in range(len(dict_all_combinations)):
     # here we set metallicity and IMF
     sp_now = fsps.StellarPopulation(compute_vega_mags=False, zcontinuous=1, imf_type=model_dict['IMF'], add_neb_emission=True, sfh=3, logzsol=model_dict['logzsol'], dust_type=2, dust2=0.0)
     # iterate over all SFHs
-    for ii in range(SFH_SFR.shape[0]):
-        print 'progress (%): ', round(100.0*ii/SFH_SFR.shape[0], 3)
+    c = 0
+    for ii in idx_halo_considered:  # range(SFH_SFR.shape[0]):
+        print 'progress (%): ', round(100.0*c/len(idx_halo_considered), 3)
+        c += 1
         lum_vec = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], [10**-3*SFH_time[::idx_every_other][-1]])
         lum_vec = np.array(lum_vec).T
         if (ii == 0):
@@ -155,6 +183,8 @@ for ii_model in range(len(dict_all_combinations)):
 
 
 lum_file.close()
+
+
 
 
 
