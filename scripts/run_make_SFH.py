@@ -73,13 +73,16 @@ idx_halo_considered = get_halo_ids(**run_params)
 
 # loop over all halos
 
+counter = 0
+
 for idx_h in idx_halo_considered[::100]:
     print 'progress (%): ', round(100.0*idx_h/len(M_table_in), 3)
     time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
-    if (idx_h == 0):
+    if (counter == 0):
         SFH_table_SFR = SFR_list
     else:
         SFH_table_SFR = np.vstack([SFH_table_SFR, SFR_list])
+    counter += 1
 
 
 # save SFH as numpy file, later combine all these files
