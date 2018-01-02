@@ -10,6 +10,7 @@ January 2, 2018   : update parallel
 
 import numpy as np
 import os
+import shutil
 import argparse
 
 import read_in_halo_cat
@@ -93,14 +94,21 @@ for idx_h in idx_halo_considered[::100]:
     counter += 1
 
 
-# save SFH as numpy file, later combine all these files
+# save SFH as numpy file (in a new directory), later combine all these files
 
 def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key=1.0, **kwargs):
     print 'index saving now... ', idx_halo_key
-    np.save(path_SFH_cat + filename_SFH_file[:-5] + '_' + str(int(float(idx_halo_key))-1) + '.npy', SFH_table_SFR)
-    np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(int(float(idx_halo_key))-1) + '.npy', time_list)
+    np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(idx_halo_key))-1) + '.npy', SFH_table_SFR)
+    np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(idx_halo_key))-1) + '.npy', time_list)
+
+
+path_SFH_save = path_SFH_cat + '/' + filename_SFH_file[:-5]
+
+if os.path.exists(path_SFH_save):
+    shutil.rmtree(path_SFH_save)
+
+os.makedirs(path_SFH_save)
 
 
 save_SFH(SFH_table_SFR, time_list, **run_params)
-
 

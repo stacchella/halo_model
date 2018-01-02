@@ -34,7 +34,7 @@ filename_SFH_file = 'SFH_z4_random.hdf5'
 
 # get all files
 
-list_files_all = glob.glob(path_SFH_cat + filename_SFH_file[:-5] + '*.npy')
+list_files_all = glob.glob(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '*.npy')
 
 
 # iterate over it
@@ -68,11 +68,14 @@ try:
 except OSError:
     pass
 
+
 f = h5py.File(path_SFH_cat + filename_SFH_file, 'w')
+
 # add SFH
 grp_SFH = f.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=time_list)
 grp_SFH.create_dataset('SFH_SFR', data=SFH_table_SFR)
+
 # add DM assembly
 grp_DM = f.create_group("DM")
 grp_DM.create_dataset('DM_time', data=t_snapshots)
