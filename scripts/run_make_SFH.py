@@ -10,6 +10,7 @@ January 2, 2018   : update parallel
 
 import numpy as np
 import os
+import argparse
 
 import read_in_halo_cat
 import read_in_efficency
@@ -18,11 +19,18 @@ import make_SFH
 from astropy.cosmology import WMAP7 as cosmo
 
 
-# define parameters
+# define parameters: read command line arguments
 
-run_params = {'number_of_bins': 20,  # this gives number of cores we run on
-              'idx_halo_key': 1.0,  # iteration variable
+parser = argparse.ArgumentParser()
+parser.add_argument("--number_of_bins", type=int, help="number of cores")
+parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
+args = parser.parse_args()
+
+
+run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cores we run on
+              'idx_halo_key': args.idx_halo_key,  # iteration variable
               }
+
 
 
 # define paths
