@@ -2,6 +2,8 @@
 Sandro Tacchella
 December 20, 2017 : iniate
 January 2, 2018   : update parallel
+=> sbatch --array=1-21 submission_script_make_SFH.sh
+
 '''
 
 # import modules
