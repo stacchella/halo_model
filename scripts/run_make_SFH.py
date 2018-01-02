@@ -62,13 +62,13 @@ t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
 # split halo in bins
 
-def get_halo_ids(idx_halo_key=1.0, **kwargs):
+def get_halo_ids(number_of_bins, idx_halo_key=1.0):
     idx_all_halos = range(len(M_table_in))
     idx_bins_all_halos = np.array_split(idx_all_halos, number_of_bins)
     return(idx_bins_all_halos[int(idx_halo_key-1)])  # -1 since slurm counts from 1 (and not from 0)
 
 
-idx_halo_considered = get_halo_ids()
+idx_halo_considered = get_halo_ids(**run_params)
 
 
 # loop over all halos
