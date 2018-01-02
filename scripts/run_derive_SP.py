@@ -1,6 +1,7 @@
 '''
 Sandro Tacchella
-December 21, 2017
+December 21, 2017 : intiate
+January 2, 2018   : update parallel
 
 
 NOTES:

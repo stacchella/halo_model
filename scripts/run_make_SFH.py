@@ -1,6 +1,7 @@
 '''
 Sandro Tacchella
-December 20, 2017
+December 20, 2017 : iniate
+January 2, 2018   : update parallel
 '''
 
 # import modules
@@ -14,6 +15,11 @@ import read_in_efficency
 import make_SFH
 
 from astropy.cosmology import WMAP7 as cosmo
+
+
+# define parameters
+
+number_of_bins = 20  # this gives number of cores we run on
 
 
 # define paths
@@ -50,9 +56,21 @@ epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + effic
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
+
+# split halo in bins
+
+def get_halo_ids(idx_halo=0):
+    idx_all_halos = range(len(M_table_in))
+    idx_bins_all_halos = np.array_split(idx_all_halos, number_of_bins)
+    return(idx_bins_all_halos[idx_halo-1])  # -1 since slurm counts from 1 (and not from 0)
+
+
+idx_halo_considered = get_halo_ids(idx_halo=idx_halo_key)
+
+
 # loop over all halos
 
-for idx_h in range(len(M_table_in)):
+for idx_h in idx_halo_considered[::100]:
     print 'progress (%): ', round(100.0*idx_h/len(M_table_in), 3)
     time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
     if (idx_h == 0):
@@ -61,24 +79,30 @@ for idx_h in range(len(M_table_in)):
         SFH_table_SFR = np.vstack([SFH_table_SFR, SFR_list])
 
 
+# save SFH as numpy file, later combine all these files
+
+np.save(path_SFH_cat + filename_SFH_file[:-5] + '_' + str(idx_halo_key) + '.npy', SFH_table_SFR)
+np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(idx_halo_key) + '.npy', time_list)
+
+
 # save SFH
 
-try:
-    os.remove(path_SFH_cat + filename_SFH_file)
-except OSError:
-    pass
+# try:
+#     os.remove(path_SFH_cat + filename_SFH_file)
+# except OSError:
+#     pass
 
-f = h5py.File(path_SFH_cat + filename_SFH_file, 'w')
-# add SFH
-grp_SFH = f.create_group("SFH")
-grp_SFH.create_dataset('SFH_time', data=time_list)
-grp_SFH.create_dataset('SFH_SFR', data=SFH_table_SFR)
-# add DM assembly
-grp_DM = f.create_group("DM")
-grp_DM.create_dataset('DM_time', data=t_snapshots)
-grp_DM.create_dataset('DM_z', data=z_table_in)
-grp_DM.create_dataset('DM_M', data=M_table_in)
-grp_DM.create_dataset('DM_Mt', data=Mt_table_in)
-f.close()
+# f = h5py.File(path_SFH_cat + filename_SFH_file, 'w')
+# # add SFH
+# grp_SFH = f.create_group("SFH")
+# grp_SFH.create_dataset('SFH_time', data=time_list)
+# grp_SFH.create_dataset('SFH_SFR', data=SFH_table_SFR)
+# # add DM assembly
+# grp_DM = f.create_group("DM")
+# grp_DM.create_dataset('DM_time', data=t_snapshots)
+# grp_DM.create_dataset('DM_z', data=z_table_in)
+# grp_DM.create_dataset('DM_M', data=M_table_in)
+# grp_DM.create_dataset('DM_Mt', data=Mt_table_in)
+# f.close()
 
 
