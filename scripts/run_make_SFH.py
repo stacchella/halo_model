@@ -76,7 +76,7 @@ idx_halo_considered = get_halo_ids(**run_params)
 counter = 0
 
 for idx_h in idx_halo_considered[::100]:
-    print 'progress (%): ', round(100.0*idx_h/len(M_table_in), 3)
+    print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
     time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
     if (counter == 0):
         SFH_table_SFR = SFR_list
@@ -87,8 +87,12 @@ for idx_h in idx_halo_considered[::100]:
 
 # save SFH as numpy file, later combine all these files
 
-np.save(path_SFH_cat + filename_SFH_file[:-5] + '_' + str(run_params['idx_halo_key']) + '.npy', SFH_table_SFR)
-np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(run_params['idx_halo_key']) + '.npy', time_list)
+def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key=1.0):
+    print 'index saving now... ', idx_halo_key
+    np.save(path_SFH_cat + filename_SFH_file[:-5] + '_' + str(idx_halo_key-1) + '.npy', SFH_table_SFR)
+    np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(idx_halo_key-1) + '.npy', time_list)
 
+
+save_SFH(SFH_table_SFR, time_list_in, **run_params)
 
 
