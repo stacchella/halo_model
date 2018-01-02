@@ -62,9 +62,10 @@ t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
 # split halo in bins
 
-def get_halo_ids(number_of_bins, idx_halo_key, **kwargs):
+def get_halo_ids(number_of_bins, idx_halo_key=1.0, **kwargs):
     idx_all_halos = range(len(M_table_in))
     idx_bins_all_halos = np.array_split(idx_all_halos, number_of_bins)
+    print idx_bins_all_halos[int(float(idx_halo_key))-1]
     return(idx_bins_all_halos[int(float(idx_halo_key))-1])  # -1 since slurm counts from 1 (and not from 0)
 
 
@@ -87,7 +88,7 @@ for idx_h in idx_halo_considered[::100]:
 
 # save SFH as numpy file, later combine all these files
 
-def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key, **kwargs):
+def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key=1.0, **kwargs):
     print 'index saving now... ', idx_halo_key
     np.save(path_SFH_cat + filename_SFH_file[:-5] + '_' + str(int(float(idx_halo_key))-1) + '.npy', SFH_table_SFR)
     np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(int(float(idx_halo_key))-1) + '.npy', time_list)
