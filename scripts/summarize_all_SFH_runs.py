@@ -50,7 +50,7 @@ for file_name in list_files_all:
         array_now = np.load(file_name)
         SFH_table_SFR = array_now
         counter += 1
-    else:
+    elif ('_t_' not in file_name):
         array_now = np.load(file_name)
         SFH_table_SFR = np.vstack([SFH_table_SFR, array_now])
         counter += 1
