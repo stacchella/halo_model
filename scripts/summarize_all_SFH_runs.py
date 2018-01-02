@@ -42,7 +42,7 @@ list_files_all = glob.glob(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + f
 counter = 0
 time_list = None
 
-for file_name in list_files_all[:10]:
+for file_name in list_files_all:
     if ('_t_' in file_name) and (time_list is None):
         array_now = np.load(file_name)
         time_list = array_now
