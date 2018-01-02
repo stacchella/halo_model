@@ -2,7 +2,7 @@
 Sandro Tacchella
 December 20, 2017 : iniate
 January 2, 2018   : update parallel
-=> sbatch --array=1-21 submission_script_make_SFH.sh
+=> sbatch --array=1-XX submission_script_make_SFH.sh, with XX given by number_of_bins
 
 '''
 
@@ -19,20 +19,6 @@ import make_SFH
 from astropy.cosmology import WMAP7 as cosmo
 
 
-# define parameters: read command line arguments
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--number_of_bins", type=int, help="number of cores")
-parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
-args = parser.parse_args()
-
-
-run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cores we run on
-              'idx_halo_key': args.idx_halo_key,  # iteration variable
-              }
-
-
-
 # define paths
 
 path_main = os.environ['WDIR_halo_model']
@@ -47,6 +33,19 @@ DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
 efficency_filename = 'calibration/epsilon.npy'
 SFH_type_option = 'random'
 filename_SFH_file = 'SFH_z4_random.hdf5'
+
+
+# read in command line arguments
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--number_of_bins", type=int, help="number of cores")
+parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
+args = parser.parse_args()
+
+
+run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cores we run on
+              'idx_halo_key': args.idx_halo_key,  # iteration variable
+              }
 
 
 # get dark matter accretion history
