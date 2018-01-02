@@ -93,6 +93,6 @@ def save_SFH(SFH_table_SFR_in, time_list_in, idx_halo_key=1.0):
     np.save(path_SFH_cat + filename_SFH_file[:-5] + '_t_' + str(idx_halo_key-1) + '.npy', time_list)
 
 
-save_SFH(SFH_table_SFR, time_list_in, **run_params)
+save_SFH(SFH_table_SFR, time_list, **run_params)
 
 
