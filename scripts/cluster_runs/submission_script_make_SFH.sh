@@ -9,7 +9,7 @@
 ### Partition or queue name
 #SBATCH -p shared
 ### memory per cpu, in MB
-#SBATCH --mem-per-cpu=4000
+#SBATCH --mem-per-cpu=8000
 ### Job name
 #SBATCH -J 'random_SFH'
 ### output and error logs
@@ -20,5 +20,5 @@
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
 srun -n 1 python /n/regal/eisenstein_lab/stacchella/halo_model/scripts/run_make_SFH.py \
---number_of_bins=200 \
+--number_of_bins=100 \
 --idx_halo_key="${SLURM_ARRAY_TASK_ID}"
