@@ -47,6 +47,10 @@ run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cor
               'idx_halo_key': args.idx_halo_key,  # iteration variable
               }
 
+# run_params = {'number_of_bins': 1,  # this gives number of cores we run on
+#              'idx_halo_key': 1,  # iteration variable
+#              }
+
 
 # get dark matter accretion history
 
@@ -85,12 +89,12 @@ counter = 0
 
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
-    if (round(t_snapshots[0]) > 150.0):
-        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=150.0, dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
-        time_list_lowres, SFR_list_lowres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=20.0, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
-        idx = (np.abs(time_list_lowres-150.0)).argmin()
-        time_list = np.append(time_list_highres, time_list_lowres[idx:])
-        SFR_list = np.append(SFR_list_highres, SFR_list_lowres[idx:])
+    if (round(t_snapshots[0]) > 200.0):
+        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=200.0, dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
+        time_list_lowres, SFR_list_lowres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=20.0, SFH_type='constant', epsilon_fct=epsilon_efficency_fct)
+        idx = (np.abs(time_list_lowres-time_list_highres[2])).argmin()
+        time_list = np.append(time_list_lowres[:idx], time_list_highres[2:])
+        SFR_list = np.append(SFR_list_lowres[:idx], SFR_list_highres[2:])
     else:
         time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
     if (counter == 0):
@@ -105,5 +109,7 @@ for idx_h in idx_halo_considered:
 np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.npy', SFH_table_SFR)
 np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(args.idx_halo_key))-1) + '.npy', time_list)
 
+#np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_0.npy', SFH_table_SFR)
+#np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_0.npy', time_list)
 
 

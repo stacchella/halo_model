@@ -25,7 +25,7 @@ def model_SFH(time, mass_tot, mu, sig):
 
 def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_type=None, epsilon_fct=None):
     '''
-    This function constructs SFH (time and SFR) for a given mass growth list
+    This function constructs SFH (time since Big Bang in Gyr and SFR) for a given mass growth list
     and snapshot times.
     ---
     mass_list   : mass growth history
@@ -39,15 +39,16 @@ def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_ty
     # snapshots to consider
     idx_z = np.where(t_snapshots >= t_snapshots[0]-look_back)[0]
     # construct age and mass list
-    t_age = np.round(t_snapshots[idx_z][::-1]-t_snapshots[idx_z[-1]], 1)
+    t_age = np.round(t_snapshots[idx_z]-t_snapshots[idx_z[-1]], 1)[::-1]
     M_list = mass_growth_list[idx_z][::-1]
-    # construct SFH
-    time_list = []
-    SFR_list = []
+    # construct SFH:
+    time_start = np.round(np.min(t_snapshots[idx_z]), 1)
+    t_age_list = np.array([-1.0*time_start, -0.5*dt])
+    SFR_list = np.array([0.0, 0.0])
     for ii in range(len(idx_z)-1):
         time_bins = np.arange(0, t_age[ii+1]-t_age[ii]+dt, dt)
         time_center = time_bins[:-1]+0.5*np.diff(time_bins)
-        time_list = np.append(time_list, t_age[ii]+time_center)
+        t_age_list = np.append(t_age_list, t_age[ii]+time_center)
         delta_M = np.max([0.0, M_list[ii+1]-M_list[ii]])
         # set SFR distribution in recent time
         if (ii == len(idx_z)-2) and (SFH_type is not None):  # last bin should be according to type
@@ -64,5 +65,44 @@ def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_ty
             efficency = epsilon_fct(np.log10(0.5*(M_list[ii+1]+M_list[ii])), size_in=1.0)
             SFR = 10**efficency*model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
         SFR_list = np.append(SFR_list, SFR)
+    # time_list: array of time since Big Bang in Myr
+    time_list = time_start + t_age_list
+    SFR_list[~np.isfinite(SFR_list)] = 0.0
     return(time_list, SFR_list)
+
+
+
+
+    # # snapshots to consider
+    # idx_z = np.where(t_snapshots >= t_snapshots[0]-look_back)[0]
+    # # construct age and mass list
+    # t_age = np.round(t_snapshots[idx_z][::-1]-t_snapshots[idx_z[-1]], 1)
+    # M_list = mass_growth_list[idx_z][::-1]
+    # # construct SFH
+    # time_list = []
+    # SFR_list = []
+    # for ii in range(len(idx_z)-1):
+    #     time_bins = np.arange(0, t_age[ii+1]-t_age[ii]+dt, dt)
+    #     time_center = time_bins[:-1]+0.5*np.diff(time_bins)
+    #     time_list = np.append(time_list, t_age[ii]+time_center)
+    #     delta_M = np.max([0.0, M_list[ii+1]-M_list[ii]])
+    #     # set SFR distribution in recent time
+    #     if (ii == len(idx_z)-2) and (SFH_type is not None):  # last bin should be according to type
+    #         if (SFH_type == 'constant'):
+    #             mu_SFR, sig_SFR = 0.5*(t_age[ii+1]-t_age[ii]), 1000
+    #         elif (SFH_type == 'random'):
+    #             mu_SFR = np.max(time_bins)*np.random.random(1)
+    #             sig_SFR = 20.0*np.random.random(1)
+    #     else:  # all other bins constant SFR
+    #         mu_SFR, sig_SFR = 0.5*(t_age[ii+1]-t_age[ii]), 1000
+    #     if epsilon_fct is None:
+    #         SFR = model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
+    #     else:
+    #         efficency = epsilon_fct(np.log10(0.5*(M_list[ii+1]+M_list[ii])), size_in=1.0)
+    #         SFR = 10**efficency*model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
+    #     SFR_list = np.append(SFR_list, SFR)
+    # # convert time_list to time since Big Bang, as requiered by FSPS
+    # time_list = time_list
+    # SFR_list = SFR_list[::-1]
+    # return(time_list, SFR_list)
 
