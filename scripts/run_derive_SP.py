@@ -83,16 +83,6 @@ except OSError:
 
 
 lum_file = h5py.File(path_SP_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SP_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5', 'w')
-# # add SFH
-# grp_SFH = lum_file.create_group("SFH")
-# grp_SFH.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
-# grp_SFH.create_dataset('SFH_SFR', data=SFH_file['SFH/SFH_time'][:])
-# # add DM assembly
-# grp_DM = lum_file.create_group("DM")
-# grp_DM.create_dataset('DM_time', data=SFH_file['DM/DM_time'][:])
-# grp_DM.create_dataset('DM_z', data=SFH_file['DM/DM_z'][:])
-# grp_DM.create_dataset('DM_M', data=SFH_file['DM/DM_M'][:])
-# grp_DM.create_dataset('DM_Mt', data=SFH_file['DM/DM_Mt'][:])
 # add luminosities
 grp_lum = lum_file.create_group("luminosities")
 grp_lum.attrs['luminosity_info'] = 'L_Ha', 'L_Hb', 'L_1500', 'L_2300', 'L_2800'

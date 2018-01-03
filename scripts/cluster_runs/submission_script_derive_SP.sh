@@ -7,9 +7,9 @@
 ### Requested computing time in minutes
 #SBATCH -t 10080
 ### Partition or queue name
-#SBATCH -p general
+#SBATCH -p shared
 ### memory per cpu, in MB
-#SBATCH --mem-per-cpu=16000
+#SBATCH --mem-per-cpu=4000
 ### Job name
 #SBATCH -J 'random_SFH'
 ### output and error logs
