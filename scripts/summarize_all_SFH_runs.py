@@ -9,7 +9,7 @@ combine all (numpy) files to one (hdf5) file.
 # import modules
 
 import numpy as np
-import glob
+import argparse
 import os
 import h5py
 
@@ -32,26 +32,31 @@ DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
 filename_SFH_file = 'SFH_z4_random.hdf5'
 
 
-# get all files
+# get number of bins
 
-list_files_all = glob.glob(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '*.npy')
+parser = argparse.ArgumentParser()
+parser.add_argument("--number_of_bins", type=int, help="number of cores")
+args = parser.parse_args()
+
+number_of_bins = args.number_of_bins
 
 
-# iterate over it
+# iterate over all files
 
 counter = 0
-time_list = None
 
-for file_name in list_files_all:
-    if ('_t_' in file_name) and (time_list is None):
-        time_list = np.load(file_name)
-    elif (counter == 0) and ('_t_' not in file_name):
+for ii in range(number_of_bins):
+    file_name = path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(ii))) + '.npy'
+    if (counter == 0):
         SFH_table_SFR = np.load(file_name)
         counter += 1
-    elif ('_t_' not in file_name):
+    else:
         SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
         counter += 1
-    print 'progress (%): ', round(100.0*counter/(0.5*len(list_files_all)), 3)
+    print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
+
+
+time_list = np.load(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(ii))) + '.npy')
 
 
 # get dark matter accretion history
