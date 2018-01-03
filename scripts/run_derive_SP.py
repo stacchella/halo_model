@@ -152,6 +152,7 @@ def get_halo_ids(number_of_bins, idx_halo_key=1.0, **kwargs):
 
 
 idx_halo_considered = get_halo_ids(**run_params)
+grp_lum.create_dataset('halo_idx', data=idx_halo_considered)
 
 
 # iterate over all models and compute luminosities
@@ -172,7 +173,7 @@ for ii_model in range(len(dict_all_combinations)):
         c += 1
         lum_vec = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], [10**-3*SFH_time[::idx_every_other][-1]])
         lum_vec = np.array(lum_vec).T
-        if (ii == 0):
+        if (ii == idx_halo_considered[0]):
             lum_mat = lum_vec
         else:
             lum_mat = np.vstack([lum_mat, lum_vec])
