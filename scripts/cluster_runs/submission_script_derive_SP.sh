@@ -9,7 +9,7 @@
 ### Partition or queue name
 #SBATCH -p general
 ### memory per cpu, in MB
-#SBATCH --mem-per-cpu=60000
+#SBATCH --mem-per-cpu=8000
 ### Job name
 #SBATCH -J 'random_SFH'
 ### output and error logs
