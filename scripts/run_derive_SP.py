@@ -152,7 +152,7 @@ def get_halo_ids(number_of_bins, idx_halo_key=1.0, **kwargs):
 
 
 idx_halo_considered = get_halo_ids(**run_params)
-grp_lum.create_dataset('halo_idx', data=idx_halo_considered)
+grp_lum.create_dataset('halo_idx', data=np.array(idx_halo_considered))
 
 
 # iterate over all models and compute luminosities
