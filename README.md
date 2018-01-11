@@ -1,5 +1,7 @@
 # halo_model
 
+This is a simple model that links the dark matter halo growth to the star-formation rate of its galaxy. 
+
 /scripts
 
 1  run run_make_SFH.py to generate SFH from halo catalog
