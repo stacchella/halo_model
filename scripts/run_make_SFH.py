@@ -31,18 +31,19 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 
 efficency_filename = 'calibration/epsilon.npy'
 SFH_type_option = 'random'
+
 # z=4
-DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-filename_SFH_file = 'SFH_z4_random.hdf5'
+# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
+# filename_SFH_file = 'SFH_z4_random.hdf5'
 # z=6
-#DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
-#filename_SFH_file = 'SFH_z6_random.hdf5'
+# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
+# filename_SFH_file = 'SFH_z6_random.hdf5'
 # z=8
-#DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
-#filename_SFH_file = 'SFH_z8_random.hdf5'
+DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
+filename_SFH_file = 'SFH_z8_random.hdf5'
 # z=10
-#DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
-#filename_SFH_file = 'SFH_z10_random.hdf5'
+# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
+# filename_SFH_file = 'SFH_z10_random.hdf5'
 
 
 # read in command line arguments
