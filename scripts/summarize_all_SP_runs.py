@@ -25,22 +25,20 @@ path_SP_cat = path_main + 'catalogs/SP/'
 
 # set parameters
 
+SFH_type_option = 'constant'  # 'constant' or 'random'
+
 # z=4
-filename_SFH_file = 'SFH_z4_random.hdf5'
-# filename_SP_file = 'SFH_z4_random_with_L.hdf5'
-filename_SP_file = 'SFH_z4_const_with_L.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+filename_SP_file = 'SFH_z4_' + SFH_type_option + '_with_L.hdf5'
 # z=6
-# filename_SFH_file = 'SFH_z6_random.hdf5'
-# filename_SP_file = 'SFH_z6_random_with_L.hdf5'
-# filename_SP_file = 'SFH_z6_const_with_L.hdf5'
+# filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
+# filename_SP_file = 'SFH_z6_' + SFH_type_option + '_with_L.hdf5'
 # z=8
-# filename_SFH_file = 'SFH_z8_random.hdf5'
-# filename_SP_file = 'SFH_z8_random_with_L.hdf5'
-# filename_SP_file = 'SFH_z8_const_with_L.hdf5'
+# filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
+# filename_SP_file = 'SFH_z8_' + SFH_type_option + '_with_L.hdf5'
 # z=10
-# filename_SFH_file = 'SFH_z10_random.hdf5'
-# filename_SP_file = 'SFH_z10_random_with_L.hdf5'
-# filename_SP_file = 'SFH_z10_const_with_L.hdf5'
+# filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
+# filename_SP_file = 'SFH_z10_' + SFH_type_option + '_with_L.hdf5'
 
 
 # get number of bins
