@@ -59,11 +59,11 @@ SFH_type_option = 'constant'  # 'constant' or 'random'
 # filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
 # filename_SP_file = 'SFH_z6_' + SFH_type_option + '_with_L.hdf5'
 # z=8
-filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
-filename_SP_file = 'SFH_z8_' + SFH_type_option + '_with_L.hdf5'
+# filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
+# filename_SP_file = 'SFH_z8_' + SFH_type_option + '_with_L.hdf5'
 # z=10
-# filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z10_' + SFH_type_option + '_with_L.hdf5'
+filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
+filename_SP_file = 'SFH_z10_' + SFH_type_option + '_with_L.hdf5'
 
 
 # read in command line arguments
