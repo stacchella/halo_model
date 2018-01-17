@@ -33,8 +33,9 @@ SFH_type_option = 'constant'  # 'constant' or 'random'
 efficency_filename = 'calibration/epsilon_' + SFH_type_option + '.npy'
 
 # z=4
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
+DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
 # filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
 # z=6
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
 # filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
@@ -42,8 +43,8 @@ efficency_filename = 'calibration/epsilon_' + SFH_type_option + '.npy'
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
 # filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
 # z=10
-DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
-filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
+# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
+# filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
 
 
 # read in command line arguments
@@ -74,7 +75,16 @@ print len(Mt_table_in)
 
 # set up efficency function (based on calibration)
 
-epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
+# epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
+
+# do calibration
+
+def epsilon_efficency_fct(Mh_in, size_in=1.0):
+    '''
+    This function returns an efficency from
+    the calibrated distribution for a given halo mass.
+    '''
+    return(np.ones(size_in))
 
 
 # get SFH: random burst in last step
