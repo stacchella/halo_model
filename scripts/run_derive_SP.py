@@ -49,7 +49,7 @@ path_SP_cat = path_main + 'catalogs/SP/'
 
 # set parameters
 
-idx_every_other = 1  # fundge factor so that SFH setting works
+idx_every_other = 2  # fundge factor so that SFH setting works
 SFH_type_option = 'constant'  # 'constant' or 'random'
 
 # z=4
