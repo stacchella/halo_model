@@ -34,8 +34,8 @@ efficency_filename = 'calibration/epsilon_' + SFH_type_option + '.npy'
 
 # z=4
 DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
+# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
 # z=6
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
 # filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
@@ -75,16 +75,16 @@ print len(Mt_table_in)
 
 # set up efficency function (based on calibration)
 
-epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
+# epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
 
 # do calibration
 
-# def epsilon_efficency_fct(Mh_in, size_in=1.0):
-#     '''
-#     This function returns an efficency from
-#     the calibrated distribution for a given halo mass.
-#     '''
-#     return(np.ones(size_in))
+def epsilon_efficency_fct(Mh_in, size_in=1.0):
+    '''
+    This function returns an efficency from
+    the calibrated distribution for a given halo mass.
+    '''
+    return(np.zeros(size_in))
 
 
 # get SFH: random burst in last step
@@ -111,7 +111,7 @@ counter = 0
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
     if (round(t_snapshots[0]) > 200.0):
-        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=200.0, dt=10.0, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
+        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=200.0, dt=1.0, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
         time_list_lowres, SFR_list_lowres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=20.0, SFH_type='constant', epsilon_fct=epsilon_efficency_fct)
         idx = (np.abs(time_list_lowres-time_list_highres[2])).argmin()
         time_list = np.append(time_list_lowres[:idx], time_list_highres[2:])
