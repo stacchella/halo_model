@@ -22,6 +22,8 @@ def read_in_efficency(file_name):
         '''
         idx_Mh = np.abs(epsilon_info_Mh-Mh_in).argmin()
         epsilon_median = epsilon_info_epsi[idx_Mh]
+        if np.isnan(epsilon_median):
+            epsilon_median = np.nanmin(epsilon_info_epsi)
         return(epsilon_median*np.ones(size_in))
     return(draw_epsilon)
 
