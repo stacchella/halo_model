@@ -71,7 +71,7 @@ lum_file = h5py.File(path_SP_cat + filename_SP_file, 'w')
 # add SFH
 grp_SFH = lum_file.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
-grp_SFH.create_dataset('SFH_SFR', data=SFH_file['SFH/SFH_time'][:])
+grp_SFH.create_dataset('SFH_SFR', data=SFH_file['SFH/SFH_SFR'][:])
 # add DM assembly
 grp_DM = lum_file.create_group("DM")
 grp_DM.create_dataset('DM_time', data=SFH_file['DM/DM_time'][:])
