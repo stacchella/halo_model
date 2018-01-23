@@ -29,7 +29,7 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 
 # set parameters
 
-descaling_eff_merg_in = 0.2
+descaling_eff_merg_in = 0.4
 SFH_type_option = 'constant'  # 'constant' or 'random'
 efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_median_mod.npy'
 
