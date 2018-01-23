@@ -23,7 +23,7 @@ def model_SFH(time, mass_tot, mu, sig):
     return(SFR_list)
 
 
-def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_type=None, epsilon_fct=None):
+def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_type=None, epsilon_fct=None, descaling_eff_merg=0.2):
     '''
     This function constructs SFH (time since Big Bang in Gyr and SFR) for a given mass growth list
     and snapshot times.
@@ -65,7 +65,7 @@ def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_ty
             efficency = epsilon_fct(np.log10(0.5*(M_list[ii+1]+M_list[ii])), size_in=1.0)
             # add here term to lower efficency in merging halos, when not doing calibration
             if (M_list[ii+1] > 2.0*M_list[ii]) & (efficency < 0.0):  # halo is merging
-                efficency = efficency - 1.0      # because in log units
+                efficency = efficency + np.log10(descaling_eff_merg)      # because in log units
             SFR = 10**efficency*model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
         SFR_list = np.append(SFR_list, SFR)
     # time_list: array of time since Big Bang in Myr

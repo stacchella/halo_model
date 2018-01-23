@@ -29,6 +29,7 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 
 # set parameters
 
+descaling_eff_merg_in = 0.2
 SFH_type_option = 'constant'  # 'constant' or 'random'
 efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_median_mod.npy'
 
@@ -111,13 +112,13 @@ counter = 0
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
     if (round(t_snapshots[0]) > 200.0):
-        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=200.0, dt=0.5, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
-        time_list_lowres, SFR_list_lowres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=20.0, SFH_type='constant', epsilon_fct=epsilon_efficency_fct)
+        time_list_highres, SFR_list_highres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=200.0, dt=0.5, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, descaling_eff_merg=descaling_eff_merg_in)
+        time_list_lowres, SFR_list_lowres = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=20.0, SFH_type='constant', epsilon_fct=epsilon_efficency_fct, descaling_eff_merg=descaling_eff_merg_in)
         idx = (np.abs(time_list_lowres-time_list_highres[2])).argmin()
         time_list = np.append(time_list_lowres[:idx], time_list_highres[2:])
         SFR_list = np.append(SFR_list_lowres[:idx], SFR_list_highres[2:])
     else:
-        time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct)
+        time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, look_back=round(t_snapshots[0]), dt=0.1, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, descaling_eff_merg=descaling_eff_merg_in)
     if (counter == 0):
         SFH_table_SFR = SFR_list
     else:
