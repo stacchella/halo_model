@@ -25,7 +25,7 @@ def model_SFH(time, mass_tot, mu, sig):
 
 def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_type=None, epsilon_fct=None, descaling_eff_merg=0.2):
     '''
-    This function constructs SFH (time since Big Bang in Gyr and SFR) for a given mass growth list
+    This function constructs SFH (time since Big Bang in Myr and SFR) for a given mass growth list
     and snapshot times.
     ---
     mass_list   : mass growth history
