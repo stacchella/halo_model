@@ -4,6 +4,7 @@ December 20, 2017
 '''
 
 import numpy as np
+from astropy.cosmology import WMAP7 as cosmo
 
 
 def gaussian(x, mu, sig):
@@ -23,53 +24,61 @@ def model_SFH(time, mass_tot, mu, sig):
     return(SFR_list)
 
 
-def construct_SFH(mass_growth_list, t_snapshots, look_back=500.0, dt=0.1, SFH_type=None, epsilon_fct=None, descaling_eff_merg=0.2):
+def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=0.5):
     '''
     This function constructs SFH (time since Big Bang in Myr and SFR) for a given mass growth list
     and snapshot times.
     ---
     mass_list   : mass growth history
     t_snapshots : age of the universe of snapshots
-    lookback    : how many Myr back in time to construct SFH
-    dt          : time spacing
     SFH_type    : type of star formation history in the last, most recent time bins
                   options: constant, random
     epsilon_fct : efficency function that depends on halo mass
+    dt_low_res  : time spacing at early times
+    dt_high_res : time spacing at late times
+    time_delay  : time delay of DM accretion to baryons in galaxy (fraction of t_H)
+    specific_growth_threshold  : threshold of maximum accretion
     '''
-    # snapshots to consider
-    idx_z = np.where(t_snapshots >= t_snapshots[0]-look_back)[0]
-    # construct age and mass list
-    t_age = np.round(t_snapshots[idx_z]-t_snapshots[idx_z[-1]], 1)[::-1]
-    M_list = mass_growth_list[idx_z][::-1]
-    # construct SFH:
-    time_start = np.round(np.min(t_snapshots[idx_z]), 1)
-    t_age_list = np.array([-1.0*time_start, -0.5*dt])
-    SFR_list = np.array([0.0, 0.0])
-    for ii in range(len(idx_z)-1):
-        time_bins = np.arange(0, t_age[ii+1]-t_age[ii]+dt, dt)
-        time_center = time_bins[:-1]+0.5*np.diff(time_bins)
-        t_age_list = np.append(t_age_list, t_age[ii]+time_center)
-        delta_M = np.max([0.0, M_list[ii+1]-M_list[ii]])
-        # set SFR distribution in recent time
-        if (ii == len(idx_z)-2) and (SFH_type is not None):  # last bin should be according to type
-            if (SFH_type == 'constant'):
-                mu_SFR, sig_SFR = 0.5*(t_age[ii+1]-t_age[ii]), 1000
-            elif (SFH_type == 'random'):
-                mu_SFR = np.max(time_bins)*np.random.random(1)
-                sig_SFR = 20.0*np.random.random(1)
-        else:  # all other bins constant SFR
-            mu_SFR, sig_SFR = 0.5*(t_age[ii+1]-t_age[ii]), 1000
-        if epsilon_fct is None:
-            SFR = model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
+    # make sure that mass and time increases, make time bins
+    time_bins = np.append(0.0, t_snapshots[:-1][::-1])
+    time_center = time_bins[:-1]+0.5*np.diff(time_bins)
+    M_growth = mass_growth_list[::-1]
+    dM = np.diff(M_growth)
+    # specific growth
+    dM_M = dM/M_growth[:-1]
+    # ensure only positive growth and limit specifc growth
+    dM_final = dM.copy()
+    dM_final[dM_final < 0.0] = 0.0
+    dM_final[dM_M >= specific_growth_threshold] = specific_growth_threshold*M_growth[:-1][dM_M >= specific_growth_threshold]
+    # iterate over time
+    time_high_resolution = []
+    SFR_list = []  # in Msun/yr
+    for ii_bin in range(len(time_center)):
+        # low resolution regime
+        if (time_bins[-1]-time_center[ii_bin] > 500.0):
+            time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
+        # high resolution regime
         else:
-            efficency = epsilon_fct(np.log10(0.5*(M_list[ii+1]+M_list[ii])), size_in=1.0)
-            # add here term to lower efficency in merging halos, when not doing calibration
-            if (M_list[ii+1] > 2.0*M_list[ii]) & (efficency < 0.0):  # halo is merging
-                efficency = efficency + np.log10(descaling_eff_merg)      # because in log units
-            SFR = 10**efficency*model_SFH(time_center, delta_M, mu_SFR, sig_SFR)
-        SFR_list = np.append(SFR_list, SFR)
-    # time_list: array of time since Big Bang in Myr
-    time_list = time_start + t_age_list
-    SFR_list[~np.isfinite(SFR_list)] = 0.0
-    return(time_list, SFR_list)
+            time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_high_res)
+        time_high_resolution = np.append(time_high_resolution, time_now)
+        SFR_list = np.append(SFR_list, 10**epsilon_fct(np.log10(M_growth[ii_bin]))*cosmo.Ob0/cosmo.Om0*dM_final[ii_bin]/(10**6*(time_bins[ii_bin+1]-time_bins[ii_bin]))*np.ones(len(time_now)))
+    # add time delay
+    time_vector_shift = time_delay*time_high_resolution
+    SFR_list_shifted = np.interp(time_high_resolution, time_high_resolution+time_vector_shift, SFR_list, left=0.0, right=0.0)
+    # re-distribute accretion rate in past 15 Myr
+    idx_recent_past = (time_high_resolution > time_high_resolution[-1]-15)
+    mass_formed = np.trapz(SFR_list_shifted[idx_recent_past], 10**6*time_high_resolution[idx_recent_past])
+    # add special featured SFR
+    if (SFH_type == 'random'):
+        mu_SFR = np.random.choice(time_high_resolution[idx_recent_past])
+        sig_SFR = 20.0*np.random.random(1)
+        SFR = model_SFH(time_high_resolution, mass_formed, mu_SFR, sig_SFR)
+        SFR_final = SFR_list_shifted.copy()
+        SFR_final[idx_recent_past] = 0.0
+        SFR_final += SFR
+    elif (SFH_type == 'constant'):
+        SFR_final = SFR_list_shifted.copy()
+    SFR_final[~np.isfinite(SFR_final)] = 0.0
+    return(time_high_resolution, SFR_final)
+
 
