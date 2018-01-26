@@ -55,7 +55,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     SFR_list = []  # in Msun/yr
     for ii_bin in range(len(time_center)):
         # low resolution regime
-        if (time_bins[-1]-time_center[ii_bin] > 500.0):
+        if (time_bins[-1]-time_center[ii_bin] > 300.0):
             time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
         # high resolution regime
         else:
