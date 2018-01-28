@@ -33,8 +33,8 @@ SFH_type_option = 'constant'  # 'constant' or 'random'
 efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_median_mod.npy'
 
 # z=4
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
 # filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
 # z=6
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
@@ -43,8 +43,8 @@ efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_median_mod.npy
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
 # filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
 # z=10
-DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
-filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
+# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
+# filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
 
 
 # read in command line arguments
