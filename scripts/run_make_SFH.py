@@ -109,7 +109,7 @@ counter = 0
 
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
-    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=2.0)
+    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=0.2)
     if (counter == 0):
         SFH_table_SFR = SFR_list
     else:
