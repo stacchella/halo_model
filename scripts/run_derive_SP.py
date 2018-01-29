@@ -52,13 +52,13 @@ idx_every_other = 2  # fundge factor so that SFH setting works
 SFH_type_option = 'constant'  # 'constant' or 'random'
 
 # z=4
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z4_' + SFH_type_option + '_with_L.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+filename_SP_file = 'SFH_z4_' + SFH_type_option + '_with_L.hdf5'
 # filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
 # filename_SP_file = 'SFH_z4_' + SFH_type_option + '_calibration_with_L.hdf5'
 # z=6
-filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
-filename_SP_file = 'SFH_z6_' + SFH_type_option + '_with_L.hdf5'
+# filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
+# filename_SP_file = 'SFH_z6_' + SFH_type_option + '_with_L.hdf5'
 # z=8
 # filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
 # filename_SP_file = 'SFH_z8_' + SFH_type_option + '_with_L.hdf5'
