@@ -29,12 +29,12 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 # set parameters
 
 SFH_type_option = 'constant'  # 'constant' or 'random'
-efficency_filename = 'calibration/epsilon2_' + SFH_type_option + '_median.npy'
+# efficency_filename = 'calibration/epsilon2_' + SFH_type_option + '_median.npy'
 
 # z=4
 DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
+# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
+filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
 # z=6
 # DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
 # filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
@@ -74,16 +74,16 @@ print len(Mt_table_in)
 
 # set up efficency function (based on calibration)
 
-epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
+# epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
 
 # do calibration
 
-# def epsilon_efficency_fct(Mh_in, size_in=1.0):
-#     '''
-#     This function returns an efficency from
-#     the calibrated distribution for a given halo mass.
-#     '''
-#     return(np.zeros(size_in))
+def epsilon_efficency_fct(Mh_in, size_in=1.0):
+    '''
+    This function returns an efficency from
+    the calibrated distribution for a given halo mass.
+    '''
+    return(np.zeros(size_in))
 
 
 # get SFH: random burst in last step
@@ -109,7 +109,7 @@ counter = 0
 
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
-    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=0.2)
+    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=1.0)
     if (counter == 0):
         SFH_table_SFR = SFR_list
     else:
