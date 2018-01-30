@@ -12,8 +12,8 @@ This is a simple model that links the dark matter halo growth to the star-format
    python summarize_all_SFH_runs.py --number_of_bins 100
 
 3  run run_derive_SP.py to compute the luminosities for the given SFHs
-   sbatch --array=1-100 submission_script_derive_SP.sh, with XX given by number_of_bins
+   sbatch --array=1-200 submission_script_derive_SP.sh, with XX given by number_of_bins
 
 4  summarize the run with summarize_all_SP_runs.py
-   python summarize_all_SP_runs.py --number_of_bins 100
+   python summarize_all_SP_runs.py --number_of_bins 200
 
