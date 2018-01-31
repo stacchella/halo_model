@@ -65,11 +65,11 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     # add time delay
     time_vector_shift = time_delay*time_high_resolution
     SFR_list_shifted = np.interp(time_high_resolution, time_high_resolution+time_vector_shift, SFR_list, left=0.0, right=0.0)
-    # re-distribute accretion rate in past 15 Myr
-    idx_recent_past = (time_high_resolution > time_high_resolution[-1]-15)
-    mass_formed = np.trapz(SFR_list_shifted[idx_recent_past], 10**6*time_high_resolution[idx_recent_past])
     # add special featured SFR
     if (SFH_type == 'random'):
+        # re-distribute accretion rate in past 15 Myr
+        idx_recent_past = (time_high_resolution > time_high_resolution[-1]-15)
+        mass_formed = np.trapz(SFR_list_shifted[idx_recent_past], 10**6*time_high_resolution[idx_recent_past])
         mu_SFR = np.random.choice(time_high_resolution[idx_recent_past])
         sig_SFR = 20.0*np.random.random(1)
         SFR = model_SFH(time_high_resolution, mass_formed, mu_SFR, sig_SFR)
