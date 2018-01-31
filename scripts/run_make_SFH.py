@@ -29,7 +29,9 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 # set parameters
 
 SFH_type_option = 'constant'  # 'constant' or 'random'
-efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param.npy'
+#efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param.npy'
+#efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param_0.2.npy'
+efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param_0.4.npy'
 
 # z=4
 DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
