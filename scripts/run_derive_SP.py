@@ -81,8 +81,8 @@ w_max = 100000.0
 parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
-parser.add_argument("--filename_SFH", type=int, help="filename of SFH file")
-parser.add_argument("--filename_SP", type=int, help="filename of SP file")
+parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
+parser.add_argument("--filename_SP", type=str, help="filename of SP file")
 args = parser.parse_args()
 
 
