@@ -89,21 +89,16 @@ grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
 grp_spec_lum = grp_lum.create_group("spec")
 
 
-
-grp_lum = lum_file.create_group("luminosities")
-
 # close other (SFH) hdf5 file
 SFH_file.close()
 
 
 # iterate over all files, create dictionary with luminosity estimates
 
-dict_Ms_data = {}
 dict_FL_data = {}
 dict_EL_data = {}
 dict_spec_data = {}
-stellar_mass_data = []
-wavelength_data = []
+
 
 dict_lum_data = {}
 
@@ -126,16 +121,16 @@ for ii_file in range(number_of_bins):
             if 'luminosity' in ii_key:
                 dict_EL_data[ii_key] = np.vstack([dict_EL_data[ii_key], SP_file['SP/EmL'][ii_key][:]])
     if (ii_file == 0):
+        stellar_mass_data = SP_file['SP/stellar_mass'][:]
+        wavelength_data = SP_file['SP/spec/wavelength'][:]
         for ii_key in SP_file['SP/spec'].keys():
             if 'luminosity' in ii_key:
                 dict_spec_data[ii_key] = SP_file['SP/spec'][ii_key][:]
     else:
+        stellar_mass_data = np.append(stellar_mass_data, SP_file['SP/stellar_mass'][:])
         for ii_key in SP_file['SP/spec'].keys():
             if 'luminosity' in ii_key:
                 dict_spec_data[ii_key] = np.vstack([dict_spec_data[ii_key], SP_file['SP/spec'][ii_key][:]])
-
-
-
     SP_file.close()
 
 
@@ -144,15 +139,33 @@ for ii_file in range(number_of_bins):
 ii_file = 0
 SP_file = h5py.File(path_SP_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SP[:-5] + '_' + str(ii_file) + '.hdf5', 'r')
 
-# copy attibutes
-for ii_key_attr in SP_file['luminosities'].attrs.keys():
-    grp_lum.attrs[ii_key_attr] = SP_file['luminosities'].attrs[ii_key_attr]
+
 # copy content
-for ii_key in SP_file['luminosities'].keys():
+for ii_key in SP_file['SP/FilL'].keys():
     if 'luminosity' in ii_key:
-        subgrp_lum = grp_lum.create_dataset(ii_key, data=dict_lum_data[ii_key])
-        for ii_key_attr in SP_file['luminosities'][ii_key].attrs.keys():
-            subgrp_lum.attrs[ii_key_attr] = SP_file['luminosities'][ii_key].attrs[ii_key_attr]
+        subgrp_lum = grp_FilL_lum.create_dataset(ii_key, data=dict_FL_data[ii_key])
+        for ii_key_attr in SP_file['SP/FilL'][ii_key].attrs.keys():
+            subgrp_lum.attrs[ii_key_attr] = SP_file['SP/FilL'][ii_key].attrs[ii_key_attr]
+
+
+for ii_key in SP_file['SP/EmL'].keys():
+    if 'luminosity' in ii_key:
+        subgrp_lum = grp_EmL_lum.create_dataset(ii_key, data=dict_EL_data[ii_key])
+        for ii_key_attr in SP_file['SP/EmL'][ii_key].attrs.keys():
+            subgrp_lum.attrs[ii_key_attr] = SP_file['SP/EmL'][ii_key].attrs[ii_key_attr]
+
+
+for ii_key in SP_file['SP/spec'].keys():
+    if 'luminosity' in ii_key:
+        subgrp_lum = grp_spec_lum.create_dataset(ii_key, data=dict_spec_data[ii_key])
+        for ii_key_attr in SP_file['SP/spec'][ii_key].attrs.keys():
+            subgrp_lum.attrs[ii_key_attr] = SP_file['SP/spec'][ii_key].attrs[ii_key_attr]
+
+
+grp_lum.create_dataset('stellar_mass', data=stellar_mass_data)
+grp_spec_lum.create_dataset('wavelength', data=wavelength_data)
+
+
 
 SP_file.close()
 
