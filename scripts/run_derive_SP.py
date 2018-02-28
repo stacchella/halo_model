@@ -49,7 +49,7 @@ path_SP_cat = path_main + 'catalogs/SP/'
 # set parameters
 
 idx_every_other = 2  # fundge factor so that SFH setting works
-SFH_type_option = 'constant'  # 'constant' or 'random'
+# SFH_type_option = 'constant'  # 'constant' or 'random'
 
 # emission lines to be saved
 wl_EL = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
