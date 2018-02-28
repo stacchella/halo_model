@@ -220,7 +220,8 @@ for ii_model in range(len(dict_all_combinations)):
             spec_interpolate_mat = np.vstack([spec_interpolate_mat, np.array(spec_interpolate).T])
     # add to hdf5 file
     if (ii_model == 0):
-        subgrp_lum = grp_lum.create_dataset('stellar_mass', data=stellar_mass_list)
+        grp_lum.create_dataset('stellar_mass', data=stellar_mass_list)
+        grp_spec_lum.create_dataset('wavelength', data=wavelength_interpolate)
     subgrp_FilL_lum = grp_FilL_lum.create_dataset('luminosity_' + str(ii_model), data=L_filters_mat)
     subgrp_EmL_lum = grp_EmL_lum.create_dataset('luminosity_' + str(ii_model), data=L_EL_mat)
     subgrp_spec_lum = grp_spec_lum.create_dataset('luminosity_' + str(ii_model), data=spec_interpolate_mat)
