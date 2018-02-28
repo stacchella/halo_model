@@ -191,7 +191,7 @@ for ii_model in range(len(dict_all_combinations)):
     # age of stellar population (age of the Universe at current redshift), in Gyr
     tage_now = 10**-3*SFH_time[::idx_every_other][-1]
     # set up index array for emission lines
-    sp_now.set_tabular_sfh([0.0, 0.1], [1.0, 1.0], Z=None)  # fake for computation here
+    sp_now.set_tabular_sfh(np.array([0.0, 0.1]), np.array([1.0, 1.0]), Z=None)  # fake for computation here
     idx_EL = []
     for ii_wl in wl_EL:
         idx_EL.append(int((np.abs(sp_now.emline_wavelengths-ii_wl)).argmin()))
