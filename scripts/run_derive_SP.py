@@ -49,7 +49,6 @@ path_SP_cat = path_main + 'catalogs/SP/'
 # set parameters
 
 idx_every_other = 2  # fundge factor so that SFH setting works
-# SFH_type_option = 'constant'  # 'constant' or 'random'
 
 # emission lines to be saved
 wl_EL = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
@@ -58,22 +57,6 @@ wl_EL = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.9066
 R = 300.0
 w_min = 3500.0
 w_max = 100000.0
-
-
-# z=4
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z4_' + SFH_type_option + '_with_L.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
-# filename_SP_file = 'SFH_z4_' + SFH_type_option + '_calibration_with_L.hdf5'
-# z=6
-# filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z6_' + SFH_type_option + '_with_L.hdf5'
-# z=8
-# filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z8_' + SFH_type_option + '_with_L.hdf5'
-# z=10
-# filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
-# filename_SP_file = 'SFH_z10_' + SFH_type_option + '_with_L.hdf5'
 
 
 # read in command line arguments
@@ -103,12 +86,12 @@ SFH_SFR = SFH_file['SFH/SFH_SFR'][:]
 # set up new hdf5 file for saving luminosities optained from SFH
 
 try:
-    os.remove(path_SP_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SP[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5')
+    os.remove(path_SP_cat + '/' + args.filename_SP[:-5] + '/' + args.filename_SP[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5')
 except OSError:
     pass
 
 
-lum_file = h5py.File(path_SP_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SP[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5', 'w')
+lum_file = h5py.File(path_SP_cat + '/' + args.filename_SP[:-5] + '/' + args.filename_SP[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.hdf5', 'w')
 # add luminosities
 grp_lum = lum_file.create_group("SP")
 grp_EmL_lum = grp_lum.create_group("EmL")

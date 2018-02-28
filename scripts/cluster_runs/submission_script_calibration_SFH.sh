@@ -11,19 +11,19 @@
 ### memory per cpu, in MB
 #SBATCH --mem-per-cpu=4000
 ### Job name
-#SBATCH -J 'random_SFH'
+#SBATCH -J 'SFH_z4_calibration'
 ### output and error logs
-#SBATCH -o random_SFH_%a.out
-#SBATCH -e random_SFH_%a.err
+#SBATCH -o SFH_z4_calibration_%a.out
+#SBATCH -e SFH_z4_calibration_%a.err
 ### mail
 #SBATCH --mail-type=END
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
 srun -n 1 python /n/eisenstein_lab/Users/stacchella/halo_model/scripts/run_make_SFH.py \
 --number_of_bins=100 \
---idx_halo_key="${SLURM_ARRAY_TASK_ID}"
---SFH_type  \
---filename_SFH  \
---filename_DM  \
---calibration_run  \
---filename_efficiency  \
+--idx_halo_key="${SLURM_ARRAY_TASK_ID}" \
+--SFH_type="constant" \
+--filename_SFH="SFH_z4_calibration.hdf5" \
+--filename_DM="MergerHistory_COLOR_CDM_z3.96.hdf5" \
+--calibration_run="True" \
+--filename_efficiency="None" \

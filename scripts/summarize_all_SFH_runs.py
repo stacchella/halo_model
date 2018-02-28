@@ -25,29 +25,12 @@ path_DM_cat = path_main + 'catalogs/DM/'
 path_SFH_cat = path_main + 'catalogs/SFH/'
 
 
-# set parameters
-
-SFH_type_option = 'constant'  # 'constant' or 'random'
-
-# z=4
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
-# z=6
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
-# filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
-# z=8
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
-# filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
-# z=10
-DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
-filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
-
-
 # get number of bins
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
+parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
+parser.add_argument("--filename_DM", type=str, help="filename of DM file")
 args = parser.parse_args()
 
 number_of_bins = args.number_of_bins
@@ -58,7 +41,7 @@ number_of_bins = args.number_of_bins
 counter = 0
 
 for ii in range(number_of_bins):
-    file_name = path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(ii))) + '.npy'
+    file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
     if (counter == 0):
         SFH_table_SFR = np.load(file_name)
         counter += 1
@@ -68,12 +51,12 @@ for ii in range(number_of_bins):
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
 
-time_list = np.load(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(ii))) + '.npy')
+time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(ii))) + '.npy')
 
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + DM_accretion_history_filename, cosmo)
+z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.filename_DM, cosmo)
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
@@ -81,12 +64,12 @@ t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 # save combined array as hdf5 file
 
 try:
-    os.remove(path_SFH_cat + filename_SFH_file)
+    os.remove(path_SFH_cat + args.filename_SFH)
 except OSError:
     pass
 
 
-f = h5py.File(path_SFH_cat + filename_SFH_file, 'w')
+f = h5py.File(path_SFH_cat + args.filename_SFH, 'w')
 
 # add SFH
 grp_SFH = f.create_group("SFH")

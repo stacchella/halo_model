@@ -26,34 +26,16 @@ path_DM_cat = path_main + 'catalogs/DM/'
 path_SFH_cat = path_main + 'catalogs/SFH/'
 
 
-# set parameters
-
-SFH_type_option = 'constant'  # 'constant' or 'random'
-#efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param.npy'
-#efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param_0.2.npy'
-efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param_0.4.npy'
-# efficency_filename = 'calibration/epsilon_' + SFH_type_option + '_param_0.6.npy'
-
-# z=4
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z3.96.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '.hdf5'
-# filename_SFH_file = 'SFH_z4_' + SFH_type_option + '_calibration.hdf5'
-# z=6
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z5.98.hdf5'
-# filename_SFH_file = 'SFH_z6_' + SFH_type_option + '.hdf5'
-# z=8
-# DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z8.10.hdf5'
-# filename_SFH_file = 'SFH_z8_' + SFH_type_option + '.hdf5'
-# z=10
-DM_accretion_history_filename = 'MergerHistory_COLOR_CDM_z10.00.hdf5'
-filename_SFH_file = 'SFH_z10_' + SFH_type_option + '.hdf5'
-
-
 # read in command line arguments
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
+parser.add_argument("--SFH_type", type=str, help="SFH type: constant or random")
+parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
+parser.add_argument("--filename_DM", type=str, help="filename of DM file")
+parser.add_argument("--calibration_run", type=str, help="True or False")
+parser.add_argument("--filename_efficiency", type=str, help="filename of efficiency file")
 args = parser.parse_args()
 
 
@@ -68,7 +50,7 @@ run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cor
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + DM_accretion_history_filename, cosmo)
+z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.filename_DM, cosmo)
 
 print len(z_table_in)
 print len(M_table_in)
@@ -77,16 +59,15 @@ print len(Mt_table_in)
 
 # set up efficency function (based on calibration)
 
-epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + efficency_filename)
-
-# do calibration
-
-# def epsilon_efficency_fct(Mh_in, size_in=1.0):
-#     '''
-#     This function returns an efficency from
-#     the calibrated distribution for a given halo mass.
-#     '''
-#     return(np.zeros(size_in))
+if (args.calibration_run == 'True'):
+    def epsilon_efficency_fct(Mh_in, size_in=1.0):
+        '''
+        This function returns an efficency from
+        the calibrated distribution for a given halo mass.
+        '''
+        return(np.zeros(size_in))
+else:
+    epsilon_efficency_fct = read_in_efficency.read_in_efficency(path_SFH_cat + args.filename_efficiency)
 
 
 # get SFH: random burst in last step
@@ -112,7 +93,7 @@ counter = 0
 
 for idx_h in idx_halo_considered:
     print 'progress (%): ', round(100.0*counter/len(idx_halo_considered), 3)
-    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=SFH_type_option, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=1.0)
+    time_list, SFR_list = make_SFH.construct_SFH(Mt_table_in[idx_h], t_snapshots, SFH_type=args.SFH_type, epsilon_fct=epsilon_efficency_fct, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, specific_growth_threshold=1.0)
     if (counter == 0):
         SFH_table_SFR = SFR_list
     else:
@@ -122,10 +103,10 @@ for idx_h in idx_halo_considered:
 
 # save SFH as numpy file (in a new directory), later combine all these files
 
-np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.npy', SFH_table_SFR)
-np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_' + str(int(float(args.idx_halo_key))-1) + '.npy', time_list)
+np.save(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(args.idx_halo_key))-1) + '.npy', SFH_table_SFR)
+np.save(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(args.idx_halo_key))-1) + '.npy', time_list)
 
-#np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_0.npy', SFH_table_SFR)
-#np.save(path_SFH_cat + '/' + filename_SFH_file[:-5] + '/' + filename_SFH_file[:-5] + '_t_0.npy', time_list)
+#np.save(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_0.npy', SFH_table_SFR)
+#np.save(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_0.npy', time_list)
 
 
