@@ -12,6 +12,7 @@ import numpy as np
 import argparse
 import os
 import h5py
+from shutil import copyfile
 
 
 # define paths
@@ -48,7 +49,9 @@ except OSError:
     pass
 
 
+# set up large file
 lum_file = h5py.File(path_SP_cat + args.filename_SP, 'w')
+lum_slim_file = h5py.File(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5', 'w')
 # add SFH
 grp_SFH = lum_file.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
@@ -66,7 +69,6 @@ grp_EmL_lum.attrs['EL_info'] = 'L_Lya', 'L_HeII', 'L_OIII_L1', 'L_OIII_L2', 'L_C
 grp_EmL_lum.attrs['EL_wavelength'] = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
 grp_FilL_lum = grp_lum.create_group("FilL")
 grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
-grp_spec_lum = grp_lum.create_group("spec")
 
 
 # close other (SFH) hdf5 file
@@ -121,6 +123,9 @@ SP_file = h5py.File(path_SP_cat + '/' + args.filename_SP[:-5] + '/' + args.filen
 
 
 # copy content
+
+grp_lum.create_dataset('stellar_mass', data=stellar_mass_data)
+
 for ii_key in SP_file['SP/FilL'].keys():
     if 'luminosity' in ii_key:
         subgrp_lum = grp_FilL_lum.create_dataset(ii_key, data=dict_FL_data[ii_key])
@@ -134,6 +139,8 @@ for ii_key in SP_file['SP/EmL'].keys():
         for ii_key_attr in SP_file['SP/EmL'][ii_key].attrs.keys():
             subgrp_lum.attrs[ii_key_attr] = SP_file['SP/EmL'][ii_key].attrs[ii_key_attr]
 
+grp_spec_lum = grp_lum.create_group("spec")
+grp_spec_lum.create_dataset('wavelength', data=wavelength_data)
 
 for ii_key in SP_file['SP/spec'].keys():
     if 'luminosity' in ii_key:
@@ -142,13 +149,28 @@ for ii_key in SP_file['SP/spec'].keys():
             subgrp_lum.attrs[ii_key_attr] = SP_file['SP/spec'][ii_key].attrs[ii_key_attr]
 
 
-grp_lum.create_dataset('stellar_mass', data=stellar_mass_data)
-grp_spec_lum.create_dataset('wavelength', data=wavelength_data)
-
-
 SP_file.close()
 
-
 lum_file.close()
+
+
+# save slim file version
+
+try:
+    os.remove(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5')
+except OSError:
+    pass
+
+
+copyfile(path_SP_cat + args.filename_SP, path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5')
+
+with h5py.File(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5',  "a") as f:
+    del f['SP/spec']
+
+f.close()
+
+
+
+
 
 

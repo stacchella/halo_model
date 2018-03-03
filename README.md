@@ -40,5 +40,8 @@ logbook of runs:
 - actual runs:		use the three different efficiencies from the varying Z runs
 					run_Z_Y_zX.hdf5  with Y = {low, fid, hig}, X = {4, 6, 8, 10, ...}
 
+python summarize_all_SFH_runs.py --number_of_bins 100 --filename_SFH SFH_z4_Z_fid.hdf5 --filename_DM MergerHistory_COLOR_CDM_z3.96.hdf5
+
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_Z_fid.hdf5 --filename_SP snapshot_z4_Z_fid.hdf5
 
 
