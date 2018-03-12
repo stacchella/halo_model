@@ -49,6 +49,12 @@ except OSError:
     pass
 
 
+try:
+    os.remove(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5')
+except OSError:
+    pass
+
+
 # set up large file
 lum_file = h5py.File(path_SP_cat + args.filename_SP, 'w')
 lum_slim_file = h5py.File(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5', 'w')
@@ -78,10 +84,10 @@ grp_EmL_lum.attrs['EL_wavelength'] = np.array([1.215670e+03, 1.640420e+03, 1.661
 grp_FilL_lum = grp_lum.create_group("FilL")
 grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
 grp_lum2 = lum_slim_file.create_group("SP")
-grp_EmL_lum2 = lum_slim_file.create_group("EmL")
+grp_EmL_lum2 = grp_lum2.create_group("EmL")
 grp_EmL_lum2.attrs['EL_info'] = 'L_Lya', 'L_HeII', 'L_OIII_L1', 'L_OIII_L2', 'L_CIII_1', 'L_CIII_2', 'L_CIV', 'L_OII', 'L_Hb', 'L_OIII', 'L_Ha', 'L_NII', 'L_SII_1', 'L_SII_2'
 grp_EmL_lum2.attrs['EL_wavelength'] = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
-grp_FilL_lum2 = lum_slim_file.create_group("FilL")
+grp_FilL_lum2 = grp_lum2.create_group("FilL")
 grp_FilL_lum2.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
 
 
