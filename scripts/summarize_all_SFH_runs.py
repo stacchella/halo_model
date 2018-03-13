@@ -42,11 +42,17 @@ counter = 0
 
 for ii in range(number_of_bins):
     file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
+    file_name_Mz = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Mz_' + str(int(float(ii))) + '.npy'
+    file_name_Z = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Z_' + str(int(float(ii))) + '.npy'
     if (counter == 0):
         SFH_table_SFR = np.load(file_name)
+        SFH_table_Mz = np.load(file_name_Mz)
+        SFH_table_Z = np.load(file_name_Z)
         counter += 1
     else:
         SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
+        SFH_table_Mz = np.vstack([SFH_table_Mz, np.load(file_name_Mz)])
+        SFH_table_Z = np.vstack([SFH_table_Z, np.load(file_name_Z)])
         counter += 1
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
@@ -75,6 +81,8 @@ f = h5py.File(path_SFH_cat + args.filename_SFH, 'w')
 grp_SFH = f.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=time_list)
 grp_SFH.create_dataset('SFH_SFR', data=SFH_table_SFR)
+grp_SFH.create_dataset('SFH_Mz', data=SFH_table_Mz)
+grp_SFH.create_dataset('SFH_Z', data=SFH_table_Z)
 
 # add DM assembly
 grp_DM = f.create_group("DM")

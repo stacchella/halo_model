@@ -62,9 +62,13 @@ lum_slim_file = h5py.File(path_SP_cat + args.filename_SP[:-5] + '_slim.hdf5', 'w
 grp_SFH = lum_file.create_group("SFH")
 grp_SFH.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
 grp_SFH.create_dataset('SFH_SFR', data=SFH_file['SFH/SFH_SFR'][:])
+grp_SFH.create_dataset('SFH_Mz', data=SFH_file['SFH/SFH_Mz'][:])
+grp_SFH.create_dataset('SFH_Z', data=SFH_file['SFH/SFH_Z'][:])
 grp_SFH2 = lum_slim_file.create_group("SFH")
 grp_SFH2.create_dataset('SFH_time', data=SFH_file['SFH/SFH_time'][:])
 grp_SFH2.create_dataset('SFH_SFR', data=SFH_file['SFH/SFH_SFR'][:])
+grp_SFH2.create_dataset('SFH_Mz', data=SFH_file['SFH/SFH_Mz'][:])
+grp_SFH2.create_dataset('SFH_Z', data=SFH_file['SFH/SFH_Z'][:])
 # add DM assembly
 grp_DM = lum_file.create_group("DM")
 grp_DM.create_dataset('DM_time', data=SFH_file['DM/DM_time'][:])
