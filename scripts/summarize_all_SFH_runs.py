@@ -30,7 +30,7 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
-parser.add_argument("--filename_DM", type=str, help="filename of DM file")
+parser.add_argument("--redshift", type=int, help="redshift")
 args = parser.parse_args()
 
 number_of_bins = args.number_of_bins
@@ -62,7 +62,7 @@ time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.fil
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.filename_DM, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.redshift, cosmo)
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
@@ -88,6 +88,7 @@ grp_SFH.create_dataset('SFH_Z', data=SFH_table_Z)
 grp_DM = f.create_group("DM")
 grp_DM.create_dataset('DM_time', data=t_snapshots)
 grp_DM.create_dataset('DM_z', data=z_table_in)
+grp_DM.create_dataset('DM_cont', data=is_contam)
 grp_DM.create_dataset('DM_M', data=M_table_in)
 grp_DM.create_dataset('DM_Mt', data=Mt_table_in)
 f.close()
