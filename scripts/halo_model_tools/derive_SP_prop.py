@@ -5,7 +5,7 @@ December 21, 2017
 
 import numpy as np
 
-def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate):
+def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate, Z_in=None):
     '''
     Function computes Ha and UV luminosities for certain SFH.
     - SFH_in    : 2xN array with age and SFR
@@ -13,6 +13,9 @@ def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate):
     '''
     # set SFH
     sp_in.set_tabular_sfh(SFH_in[0], SFH_in[1], Z=None)
+    # update Z:
+    if Z_in:
+        sp_in.params['logzsol'] = Z_in
     # get mass live
     stellar_mass = sp_in.stellar_mass
     # get magnitudes from spectraum WITH emission lines

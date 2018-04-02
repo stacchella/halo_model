@@ -81,7 +81,7 @@ run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cor
 SFH_file = h5py.File(path_SFH_cat + args.filename_SFH, 'r')
 SFH_time = SFH_file['SFH/SFH_time'][:]
 SFH_SFR = SFH_file['SFH/SFH_SFR'][:]
-
+SFH_Z = SFH_file['SFH/SFH_Z'][:]
 
 # set up new hdf5 file for saving luminosities optained from SFH
 
@@ -108,7 +108,7 @@ SFH_file.close()
 
 # set up the grid
 
-logzsol_grid = [0.0, -1.0, -1.7, -2.0, -2.7, -3.0]
+logzsol_grid = [0.0, -1.0, -1.7, -2.0, -2.7, -3.0, None]
 IMF_grid = [0, 1]
 
 iterables = [logzsol_grid, IMF_grid]
@@ -170,7 +170,10 @@ for ii_model in range(len(dict_all_combinations)):
     print '                   IMF        = ', model_dict['IMF_name']
     # set standard SP model
     # here we set metallicity and IMF
-    sp_now = fsps.StellarPopulation(compute_vega_mags=False, zcontinuous=1, imf_type=model_dict['IMF'], add_neb_emission=True, sfh=3, logzsol=model_dict['logzsol'], dust_type=2, dust2=0.0, sigma_smooth=1000.0, min_wave_smooth=3525.0, max_wave_smooth=7500.0)
+    if model_dict['logzsol']:
+        sp_now = fsps.StellarPopulation(compute_vega_mags=False, zcontinuous=1, imf_type=model_dict['IMF'], add_neb_emission=True, sfh=3, logzsol=model_dict['logzsol'], dust_type=2, dust2=0.0, sigma_smooth=1000.0, min_wave_smooth=3525.0, max_wave_smooth=7500.0)
+    else:
+        sp_now = fsps.StellarPopulation(compute_vega_mags=False, zcontinuous=1, imf_type=model_dict['IMF'], add_neb_emission=True, sfh=3, logzsol=0.0, dust_type=2, dust2=0.0, sigma_smooth=1000.0, min_wave_smooth=3525.0, max_wave_smooth=7500.0)
     # age of stellar population (age of the Universe at current redshift), in Gyr
     tage_now = 10**-3*SFH_time[::idx_every_other][-1]
     # set up index array for emission lines
@@ -190,7 +193,10 @@ for ii_model in range(len(dict_all_combinations)):
     for ii in idx_halo_considered:  # range(SFH_SFR.shape[0]):
         print 'progress (%): ', round(100.0*c/len(idx_halo_considered), 3)
         c += 1
-        stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
+        if model_dict['logzsol']:
+            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
+        else:
+            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_SFR[ii][-1])
         if (ii == idx_halo_considered[0]):
             stellar_mass_list = stellar_mass
             L_filters_mat = np.array(L_filters_list).T
