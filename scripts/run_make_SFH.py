@@ -48,9 +48,13 @@ run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cor
 #              }
 
 
-# get dark matter accretion history
+# get dark matter accretion history, remove contaminated halos
 
-z_table_in, M_table_in, Mt_table_in = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.filename_DM, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.filename_DM, cosmo)
+
+z_table_in = z_table_in[is_contam == 0.0]
+M_table_in = M_table_in[is_contam == 0.0]
+Mt_table_in = Mt_table_in[is_contam == 0.0]
 
 print len(z_table_in)
 print len(M_table_in)
