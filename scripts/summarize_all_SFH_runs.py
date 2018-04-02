@@ -21,7 +21,6 @@ from astropy.cosmology import WMAP7 as cosmo
 # define paths
 
 path_main = os.environ['WDIR_halo_model']
-path_DM_cat = path_main + 'catalogs/DM/'
 path_SFH_cat = path_main + 'catalogs/SFH/'
 
 
@@ -62,7 +61,7 @@ time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.fil
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(path_DM_cat + args.redshift, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, cosmo)
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
