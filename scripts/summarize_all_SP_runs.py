@@ -12,7 +12,6 @@ import numpy as np
 import argparse
 import os
 import h5py
-from shutil import copyfile
 
 
 # define paths

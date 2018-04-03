@@ -66,6 +66,7 @@ parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--idx_halo_key", type=int, help="iteration variable")
 parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
 parser.add_argument("--filename_SP", type=str, help="filename of SP file")
+parser.add_argument("--calibration_run", type=str, help="True or False")
 args = parser.parse_args()
 
 
@@ -108,8 +109,12 @@ SFH_file.close()
 
 # set up the grid
 
-logzsol_grid = [0.0, -1.0, -1.7, -2.0, -2.7, -3.0, -99.0]
-IMF_grid = [0, 1]
+if (args.calibration_run == 'True'):
+    logzsol_grid = [0.0, -1.7, -3.0]
+    IMF_grid = [0]
+else:
+    logzsol_grid = [0.0, -1.0, -1.7, -2.0, -2.7, -3.0, -99.0]
+    IMF_grid = [0, 1]
 
 iterables = [logzsol_grid, IMF_grid]
 
