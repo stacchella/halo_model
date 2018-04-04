@@ -23,8 +23,7 @@ srun -n 1 python /n/eisenstein_lab/Users/stacchella/halo_model/scripts/run_make_
 --number_of_bins=100 \
 --idx_halo_key="${SLURM_ARRAY_TASK_ID}" \
 --SFH_type="constant" \
---filename_SFH="SFH_z4_Z_fid.hdf5" \
---filename_DM="MergerHistory_COLOR_CDM_z3.96.hdf5" \
+--filename_SFH="SFH_z4_Z_fid_04.hdf5" \
+--redshift=4 \
 --calibration_run="False" \
 --filename_efficiency="calibration/epsilon_constant_param_0.4.npy" \
-###--filename_efficiency="calibration/epsilon_Z_fid_param.npy" \

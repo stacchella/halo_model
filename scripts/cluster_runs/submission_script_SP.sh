@@ -22,6 +22,6 @@ source activate pro
 srun -n 1 python /n/eisenstein_lab/Users/stacchella/halo_model/scripts/run_derive_SP.py \
 --number_of_bins=200 \
 --idx_halo_key="${SLURM_ARRAY_TASK_ID}" \
---filename_SFH="SFH_z4_Z_fid.hdf5" \
---filename_SP="snapshot_z4_Z_fid.hdf5" \
+--filename_SFH="SFH_z4_Z_fid_04.hdf5" \
+--filename_SP="snapshot_z4_Z_fid_04.hdf5" \
 --calibration_run="True" \

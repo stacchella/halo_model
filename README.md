@@ -29,11 +29,6 @@ logbook of runs:
     python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_calibration.hdf5 --filename_SP snapshot_z4_calibration.hdf5
 
 
-
-
-
-
-
 - tunning run:		change high end of efficiency in order to match UV LF
 					we run this 3 times, each time with different metallicity (Zsun, 0.2Zsun, 0.02Zsun) but with same IMF (Salpeter IMF)
 					0.02 Zsun: run_tunning_Z_low_XX.hdf5
