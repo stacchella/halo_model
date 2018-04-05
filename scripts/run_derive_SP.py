@@ -110,7 +110,7 @@ SFH_file.close()
 # set up the grid
 
 if (args.calibration_run == 'True'):
-    logzsol_grid = [0.0, -1.7, -3.0]
+    logzsol_grid = [-1.0, -1.7, -3.0, -99.0]
     IMF_grid = [0]
 else:
     logzsol_grid = [0.0, -1.0, -1.7, -2.0, -2.7, -3.0, -99.0]

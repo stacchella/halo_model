@@ -107,7 +107,12 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         SFR_final = SFR_list_shifted.copy()
     SFR_final[~np.isfinite(SFR_final)] = 0.0
     # compute Z evolution
-    z_highres = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_high_resolution])
+    z_highres = []
+    for age in time_high_resolution:
+        if (age < 200.0):
+            z_highres.append(18.0)
+        else:
+            z_highres.append(z_at_value(cosmo.age, age*u.Myr))
     mZ_list = np.array([10**2])
     SFR = SFR_final[:-1]+0.5*np.diff(SFR_final)
     epsilon = epsilon_list[:-1]+0.5*np.diff(epsilon_list)
