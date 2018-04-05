@@ -45,7 +45,7 @@ def get_dZ(SFR, dmgas_dt, Z, Z0, R, y, lam):
     return((y*(1.0-R)-Z*(1.0-R+lam))*SFR+Z0*dmgas_dt)
 
 
-def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, time_smoothing=0.05, specific_growth_threshold=0.5, Z0=0.0143*10**-2, R=0.1, y=0.023, lam10=0.4):
+def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, time_smoothing=0.05, specific_growth_threshold=0.5, Z0=0.0143*10**-3, R=0.1, y=0.023, lam10=0.4):
     '''
     This function constructs SFH (time since Big Bang in Myr and SFR) for a given mass growth list
     and snapshot times.
@@ -76,9 +76,8 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     dM_final = convolve(dM_final, Gaussian1DKernel(stddev=time_smoothing*time_center[-1]/np.diff(time_center)[-1]))
     # iterate over time
     time_high_resolution = []
+    epsilon_list = []
     SFR_list = []  # in Msun/yr
-    Mz_list = [10**2]  # metallicity
-    Z_list = [Z0]  # metallicity
     for ii_bin in range(len(time_center)):
         # low resolution regime
         if (time_bins[-1]-time_center[ii_bin] > 200.0):
@@ -88,12 +87,8 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
             time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_high_res)
         time_high_resolution = np.append(time_high_resolution, time_now)
         dmgas_dt = cosmo.Ob0/cosmo.Om0*dM_final[ii_bin]/(10**6*(time_bins[ii_bin+1]-time_bins[ii_bin]))
-        SFR_list = np.append(SFR_list, 10**epsilon_fct(np.log10(M_growth[ii_bin]))*dmgas_dt*np.ones(len(time_now)))
-        mstar = 10**3+np.trapz(SFR_list[:ii_bin], 10**6*time_center[:ii_bin])
-        lam = lam10*(mstar/10**10)**(-0.33)
-        mgas = 10**Mgas_Mstar_relation(z_center[ii_bin], mstar)*mstar
-        Mz_list = np.append(Mz_list, (Mz_list[-1]+10**6*(time_bins[ii_bin+1]-time_bins[ii_bin])*get_dZ(SFR_list[-1], dmgas_dt, Z_list[-1], Z0, R, y, lam))*np.ones(len(time_now)))
-        Z_list = np.append(Z_list, Mz_list[-1]/mgas*np.ones(len(time_now)))
+        epsilon_list = np.append(epsilon_list, 10**epsilon_fct(np.log10(M_growth[ii_bin])))
+        SFR_list = np.append(SFR_list, epsilon_list[-1]*dmgas_dt*np.ones(len(time_now)))
     # add time delay
     time_vector_shift = time_delay*time_high_resolution
     SFR_list_shifted = np.interp(time_high_resolution, time_high_resolution+time_vector_shift, SFR_list, left=0.0, right=0.0)
@@ -111,6 +106,21 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     elif (SFH_type == 'constant'):
         SFR_final = SFR_list_shifted.copy()
     SFR_final[~np.isfinite(SFR_final)] = 0.0
-    return(time_high_resolution, SFR_final, Mz_list[1:], Z_list[1:])
+    # compute Z evolution
+    z_highres = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_high_resolution])
+    mZ_list = np.array([10**2])
+    SFR = SFR_final[:-1]+0.5*np.diff(SFR_final)
+    epsilon = epsilon_list[:-1]+0.5*np.diff(epsilon_list)
+    epsilon[~np.isfinite(epsilon) | (epsilon <= 0.0)] = 10**-4
+    dmgas_dt = SFR/epsilon
+    Z_list = np.array([Z0])
+    for idx in range(len(time_high_resolution)-1):
+        mstar = 10**3+np.trapz(SFR_final[:idx+1], 10**6*time_high_resolution[:idx+1])
+        mgas = 10**Mgas_Mstar_relation(z_highres[idx], mstar)*mstar
+        lam = lam10*(mstar/10**10)**(-0.33)
+        dt = 10**6*(time_high_resolution[idx+1]-time_high_resolution[idx])
+        mZ_list = np.append(mZ_list, mZ_list[-1]+dt*get_dZ(SFR[idx], dmgas_dt[idx], Z_list[-1], Z0, R, y, lam))
+        Z_list = np.append(Z_list, mZ_list[-1]/mgas)
+    return(time_high_resolution, SFR_final, mZ_list[1:], Z_list[1:])
 
 
