@@ -201,7 +201,7 @@ for ii_model in range(len(dict_all_combinations)):
         if (model_dict['logzsol'] > -10.0):
             stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
         else:
-            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_SFR[ii][-1])
+            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_Z[ii][-1])
         if (ii == idx_halo_considered[0]):
             stellar_mass_list = stellar_mass
             L_filters_mat = np.array(L_filters_list).T
