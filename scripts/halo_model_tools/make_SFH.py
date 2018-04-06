@@ -63,7 +63,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     # make sure that mass and time increases, make time bins
     time_bins = np.append(0.0, t_snapshots[:-1][::-1])
     time_center = time_bins[:-1]+0.5*np.diff(time_bins)
-    z_center = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_center])
+    #z_center = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_center])
     M_growth = mass_growth_list[::-1]
     dM = np.diff(M_growth)
     # specific growth
@@ -115,6 +115,8 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
             z_highres.append(z_at_value(cosmo.age, age*u.Myr))
     mZ_list = np.array([10**2])
     SFR = SFR_final[:-1]+0.5*np.diff(SFR_final)
+    halo_mass_list = np.interp(time_high_resolution, time_center, M_growth, left=M_growth[0], right=M_growth[-1])
+    epsilon = 10**epsilon_fct(np.log10(halo_mass_list[:-1] + 0.5*np.diff(halo_mass_list)))
     epsilon = epsilon_list[:-1]+0.5*np.diff(epsilon_list)
     epsilon[~np.isfinite(epsilon) | (epsilon <= 0.0)] = 10**-4
     dmgas_dt = SFR/epsilon
