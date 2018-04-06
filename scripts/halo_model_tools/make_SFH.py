@@ -116,12 +116,8 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     mZ_list = np.array([10**2])
     SFR = SFR_final[:-1]+0.5*np.diff(SFR_final)
     halo_mass_list = np.interp(time_high_resolution, time_center, dM_final, left=dM_final[0], right=dM_final[-1])
-    print len(halo_mass_list)
     epsilon = 10**epsilon_fct(np.log10(halo_mass_list[:-1] + 0.5*np.diff(halo_mass_list)))
-    epsilon = epsilon_list[:-1]+0.5*np.diff(epsilon_list)
     epsilon[~np.isfinite(epsilon) | (epsilon <= 0.0)] = 10**-4
-    print len(epsilon)
-    print len(SFR)
     dmgas_dt = SFR/epsilon
     Z_list = np.array([Z0])
     for idx in range(len(time_high_resolution)-1):
