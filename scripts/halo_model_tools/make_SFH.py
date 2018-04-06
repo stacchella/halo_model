@@ -114,17 +114,16 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         else:
             z_highres.append(z_at_value(cosmo.age, age*u.Myr))
     mZ_list = np.array([10**2])
-    SFR = SFR_final[:-1]+0.5*np.diff(SFR_final)
-    halo_mass_list = np.interp(time_high_resolution, time_center, dM_final, left=dM_final[0], right=dM_final[-1])
-    epsilon = 10**epsilon_fct(np.log10(halo_mass_list[:-1] + 0.5*np.diff(halo_mass_list)))
+    SFR = np.interp(time_bins, time_high_resolution, SFR_final, left=SFR_final[0], right=SFR_final[-1])
+    epsilon = 10**epsilon_fct(np.log10(time_bins))
     epsilon[~np.isfinite(epsilon) | (epsilon <= 0.0)] = 10**-4
     dmgas_dt = SFR/epsilon
     Z_list = np.array([Z0])
-    for idx in range(len(time_high_resolution)-1):
-        mstar = 10**3+np.trapz(SFR_final[:idx+1], 10**6*time_high_resolution[:idx+1])
+    for idx in range(len(time_bins)-1):
+        mstar = 10**3+np.trapz(SFR_final[:idx+1], 10**6*time_bins[:idx+1])
         mgas = 10**Mgas_Mstar_relation(z_highres[idx], mstar)*mstar
         lam = lam10*(mstar/10**10)**(-0.33)
-        dt = 10**6*(time_high_resolution[idx+1]-time_high_resolution[idx])
+        dt = 10**6*(time_bins[idx+1]-time_bins[idx])
         mZ_list = np.append(mZ_list, mZ_list[-1]+dt*get_dZ(SFR[idx], dmgas_dt[idx], Z_list[-1], Z0, R, y, lam))
         Z_list = np.append(Z_list, mZ_list[-1]/mgas)
     return(time_high_resolution, SFR_final, mZ_list[1:], Z_list[1:])
