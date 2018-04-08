@@ -110,6 +110,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     mZ_list = np.array([10**2])
     SFR = np.interp(time_bins, time_high_resolution, SFR_final, left=SFR_final[0], right=SFR_final[-1])
     epsilon_list[~np.isfinite(epsilon_list) | (epsilon_list <= 0.0)] = 10**-4
+    epsilon_list = epsilon_list[:-1]+0.5*np.diff(epsilon_list)
     dmgas_dt = SFR/epsilon_list
     Z_list = np.array([Z0])
     for idx in range(len(time_bins)-1):
