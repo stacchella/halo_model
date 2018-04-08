@@ -63,7 +63,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     # make sure that mass and time increases, make time bins
     time_bins = np.append(0.0, t_snapshots[:-1][::-1])
     time_center = time_bins[:-1]+0.5*np.diff(time_bins)
-    #z_center = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_center])
+    z_center = np.array([z_at_value(cosmo.age, age*u.Myr) for age in time_center])
     M_growth = mass_growth_list[::-1]
     dM = np.diff(M_growth)
     # specific growth
@@ -107,21 +107,14 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         SFR_final = SFR_list_shifted.copy()
     SFR_final[~np.isfinite(SFR_final)] = 0.0
     # compute Z evolution
-    z_highres = []
-    for age in time_high_resolution:
-        if (age < 200.0):
-            z_highres.append(18.0)
-        else:
-            z_highres.append(z_at_value(cosmo.age, age*u.Myr))
     mZ_list = np.array([10**2])
     SFR = np.interp(time_bins, time_high_resolution, SFR_final, left=SFR_final[0], right=SFR_final[-1])
-    epsilon = 10**epsilon_fct(np.log10(time_bins))
-    epsilon[~np.isfinite(epsilon) | (epsilon <= 0.0)] = 10**-4
-    dmgas_dt = SFR/epsilon
+    epsilon_list[~np.isfinite(epsilon_list) | (epsilon_list <= 0.0)] = 10**-4
+    dmgas_dt = SFR/epsilon_list
     Z_list = np.array([Z0])
     for idx in range(len(time_bins)-1):
         mstar = 10**3+np.trapz(SFR_final[:idx+1], 10**6*time_bins[:idx+1])
-        mgas = 10**Mgas_Mstar_relation(z_highres[idx], mstar)*mstar
+        mgas = 10**Mgas_Mstar_relation(z_center[idx], mstar)*mstar
         lam = lam10*(mstar/10**10)**(-0.33)
         dt = 10**6*(time_bins[idx+1]-time_bins[idx])
         mZ_list = np.append(mZ_list, mZ_list[-1]+dt*get_dZ(SFR[idx], dmgas_dt[idx], Z_list[-1], Z0, R, y, lam))
