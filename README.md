@@ -22,17 +22,16 @@ logbook of runs:
 
 
 - calibration run:  run SFR=1 in order to get a first guess on efficency
-					run_calibration.hdf5
     sbatch --array=1-100 submission_script_calibration_SFH.sh
     python summarize_all_SFH_runs.py --number_of_bins 100 --filename_SFH SFH_z4_calibration.hdf5 --redshift 4
     sbatch --array=1-200 submission_script_calibration_SP.sh
     python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_calibration.hdf5 --filename_SP snapshot_z4_calibration.hdf5
 
+- tuning fiducial metallicity of 0.02 Zsun
 
-
-    sbatch --array=1-100 submission_script_SFH.sh (update file names)
+    sbatch --array=1-100 submission_script_tuning_SFH.sh (update file names)
     python summarize_all_SFH_runs.py --number_of_bins 100 --filename_SFH SFH_z4_Z_fid_0X.hdf5 --redshift 4
-    sbatch --array=1-200 submission_script_SP.sh (update file names)
+    sbatch --array=1-200 submission_script_tuning_SP.sh (update file names)
     python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_Z_fid_0X.hdf5 --filename_SP snapshot_z4_Z_fid_0X.hdf5
 
     scp -r stacchella@odyssey.rc.fas.harvard.edu://n/eisenstein_lab/Users/stacchella/halo_model/catalogs/SP/*.hdf5 /Volumes/Tacchella/Work/Postdoc/Halo_Model/snapshots/
