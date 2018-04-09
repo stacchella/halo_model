@@ -7,7 +7,7 @@
 ### Requested computing time in minutes
 #SBATCH -t 10080
 ### Partition or queue name
-#SBATCH -p shared
+#SBATCH -p conroy
 ### memory per cpu, in MB
 #SBATCH --mem-per-cpu=64000
 ### Job name
