@@ -45,15 +45,16 @@ for ii in range(number_of_bins):
         file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
         file_name_Mz = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Mz_' + str(int(float(ii))) + '.npy'
         file_name_Z = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Z_' + str(int(float(ii))) + '.npy'
-        idx_good.append(ii)
         if (counter == 0):
             SFH_table_SFR = np.load(file_name)
             SFH_table_Mz = np.load(file_name_Mz)
             SFH_table_Z = np.load(file_name_Z)
+            idx_good.append(ii)
         else:
             SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
             SFH_table_Mz = np.vstack([SFH_table_Mz, np.load(file_name_Mz)])
             SFH_table_Z = np.vstack([SFH_table_Z, np.load(file_name_Z)])
+            idx_good.append(ii)
     except IOError:
             SFH_table_SFR = np.vstack([SFH_table_SFR, -99.0*np.ones(len(SFH_table_SFR[-1]))])
             SFH_table_Mz = np.vstack([SFH_table_Mz, -99.0*np.ones(len(SFH_table_Mz[-1]))])
@@ -62,7 +63,6 @@ for ii in range(number_of_bins):
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
 
-print idx_good
 time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(idx_good[-1]))) + '.npy')
 
 
