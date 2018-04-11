@@ -40,19 +40,23 @@ number_of_bins = args.number_of_bins
 counter = 0
 
 for ii in range(number_of_bins):
-    file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
-    file_name_Mz = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Mz_' + str(int(float(ii))) + '.npy'
-    file_name_Z = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Z_' + str(int(float(ii))) + '.npy'
-    if (counter == 0):
-        SFH_table_SFR = np.load(file_name)
-        SFH_table_Mz = np.load(file_name_Mz)
-        SFH_table_Z = np.load(file_name_Z)
-        counter += 1
-    else:
-        SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
-        SFH_table_Mz = np.vstack([SFH_table_Mz, np.load(file_name_Mz)])
-        SFH_table_Z = np.vstack([SFH_table_Z, np.load(file_name_Z)])
-        counter += 1
+    try:
+        file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
+        file_name_Mz = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Mz_' + str(int(float(ii))) + '.npy'
+        file_name_Z = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Z_' + str(int(float(ii))) + '.npy'
+        if (counter == 0):
+            SFH_table_SFR = np.load(file_name)
+            SFH_table_Mz = np.load(file_name_Mz)
+            SFH_table_Z = np.load(file_name_Z)
+        else:
+            SFH_table_SFR = np.vstack([SFH_table_SFR, np.load(file_name)])
+            SFH_table_Mz = np.vstack([SFH_table_Mz, np.load(file_name_Mz)])
+            SFH_table_Z = np.vstack([SFH_table_Z, np.load(file_name_Z)])
+    except IOError:
+            SFH_table_SFR = np.vstack([SFH_table_SFR, -99.0*np.ones(len(SFH_table_SFR[-1]))])
+            SFH_table_Mz = np.vstack([SFH_table_Mz, -99.0*np.ones(len(SFH_table_Mz[-1]))])
+            SFH_table_Z = np.vstack([SFH_table_Z, -99.0*np.ones(len(SFH_table_Z[-1]))])
+    counter += 1
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
 

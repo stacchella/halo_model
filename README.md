@@ -30,7 +30,7 @@ logbook of runs:
 - tuning fiducial metallicity of 0.02 Zsun
 
     sbatch --array=1-200 submission_script_tuning_SFH.sh (update file names)
-    python summarize_all_SFH_runs.py --number_of_bins 100 --filename_SFH SFH_z4_Z_fid_0X.hdf5 --redshift 4
+    python summarize_all_SFH_runs.py --number_of_bins 200 --filename_SFH SFH_z4_Z_fid_0X.hdf5 --redshift 4
     sbatch --array=1-200 submission_script_tuning_SP.sh (update file names)
     python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_Z_fid_0X.hdf5 --filename_SP snapshot_z4_Z_fid_0X.hdf5
 
