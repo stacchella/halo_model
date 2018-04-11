@@ -60,7 +60,7 @@ for ii in range(number_of_bins):
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
 
-time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(ii))) + '.npy')
+time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(ii)-1)) + '.npy')
 
 
 # get dark matter accretion history
