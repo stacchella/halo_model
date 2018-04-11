@@ -38,12 +38,14 @@ number_of_bins = args.number_of_bins
 # iterate over all files
 
 counter = 0
+idx_good = []
 
 for ii in range(number_of_bins):
     try:
         file_name = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_' + str(int(float(ii))) + '.npy'
         file_name_Mz = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Mz_' + str(int(float(ii))) + '.npy'
         file_name_Z = path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_Z_' + str(int(float(ii))) + '.npy'
+        idx_good.append(ii)
         if (counter == 0):
             SFH_table_SFR = np.load(file_name)
             SFH_table_Mz = np.load(file_name_Mz)
@@ -60,7 +62,7 @@ for ii in range(number_of_bins):
     print 'progress (%): ', round(100.0*counter/number_of_bins, 3)
 
 
-time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(ii)-1)) + '.npy')
+time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.filename_SFH[:-5] + '_t_' + str(int(float(idx_good[-1]))) + '.npy')
 
 
 # get dark matter accretion history
