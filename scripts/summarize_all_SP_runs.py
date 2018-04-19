@@ -87,13 +87,13 @@ grp_EmL_lum = grp_lum.create_group("EmL")
 grp_EmL_lum.attrs['EL_info'] = 'L_Lya', 'L_HeII', 'L_OIII_L1', 'L_OIII_L2', 'L_CIII_1', 'L_CIII_2', 'L_CIV', 'L_OII', 'L_Hb', 'L_OIII', 'L_Ha', 'L_NII', 'L_SII_1', 'L_SII_2'
 grp_EmL_lum.attrs['EL_wavelength'] = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
 grp_FilL_lum = grp_lum.create_group("FilL")
-grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
+grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j', 'stellar_mass'
 grp_lum2 = lum_slim_file.create_group("SP")
 grp_EmL_lum2 = grp_lum2.create_group("EmL")
 grp_EmL_lum2.attrs['EL_info'] = 'L_Lya', 'L_HeII', 'L_OIII_L1', 'L_OIII_L2', 'L_CIII_1', 'L_CIII_2', 'L_CIV', 'L_OII', 'L_Hb', 'L_OIII', 'L_Ha', 'L_NII', 'L_SII_1', 'L_SII_2'
 grp_EmL_lum2.attrs['EL_wavelength'] = np.array([1.215670e+03, 1.640420e+03, 1.661240e+03, 1.666150e+03, 1.906680e+03, 1.908730e+03, 1.908730e+03, 3.727100e+03, 4.862710e+03, 5.008240e+03, 6.564600e+03, 6.585270e+03, 6.718290e+03, 6.732670e+03])
 grp_FilL_lum2 = grp_lum2.create_group("FilL")
-grp_FilL_lum2.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
+grp_FilL_lum2.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j', 'stellar_mass'
 
 
 # close other (SFH) hdf5 file
@@ -128,13 +128,11 @@ for ii_file in range(number_of_bins):
             if 'luminosity' in ii_key:
                 dict_EL_data[ii_key] = np.vstack([dict_EL_data[ii_key], SP_file['SP/EmL'][ii_key][:]])
     if (ii_file == 0):
-        stellar_mass_data = SP_file['SP/stellar_mass'][:]
         wavelength_data = SP_file['SP/spec/wavelength'][:]
         for ii_key in SP_file['SP/spec'].keys():
             if 'luminosity' in ii_key:
                 dict_spec_data[ii_key] = SP_file['SP/spec'][ii_key][:]
     else:
-        stellar_mass_data = np.append(stellar_mass_data, SP_file['SP/stellar_mass'][:])
         for ii_key in SP_file['SP/spec'].keys():
             if 'luminosity' in ii_key:
                 dict_spec_data[ii_key] = np.vstack([dict_spec_data[ii_key], SP_file['SP/spec'][ii_key][:]])
@@ -148,9 +146,6 @@ SP_file = h5py.File(path_SP_cat + '/' + args.filename_SP[:-5] + '/' + args.filen
 
 
 # copy content
-
-grp_lum.create_dataset('stellar_mass', data=stellar_mass_data)
-grp_lum2.create_dataset('stellar_mass', data=stellar_mass_data)
 
 for ii_key in SP_file['SP/FilL'].keys():
     if 'luminosity' in ii_key:

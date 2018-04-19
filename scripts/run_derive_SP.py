@@ -99,7 +99,7 @@ grp_EmL_lum = grp_lum.create_group("EmL")
 grp_EmL_lum.attrs['EL_info'] = 'L_Lya', 'L_HeII', 'L_OIII_L1', 'L_OIII_L2', 'L_CIII_1', 'L_CIII_2', 'L_CIV', 'L_OII', 'L_Hb', 'L_OIII', 'L_Ha', 'L_NII', 'L_SII_1', 'L_SII_2'
 grp_EmL_lum.attrs['EL_wavelength'] = wl_EL
 grp_FilL_lum = grp_lum.create_group("FilL")
-grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j'
+grp_FilL_lum.attrs['FL_info'] = 'i1500', 'i2300', 'i2800', 'v', 'u', '2mass_j', 'stellar_mass'
 grp_spec_lum = grp_lum.create_group("spec")
 
 
@@ -199,22 +199,19 @@ for ii_model in range(len(dict_all_combinations)):
         print 'progress (%): ', round(100.0*c/len(idx_halo_considered), 3)
         c += 1
         if (model_dict['logzsol'] > -10.0):
-            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
+            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
         else:
-            stellar_mass, L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_Z[ii][-1])
+            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_Z[ii][-1])
         if (ii == idx_halo_considered[0]):
-            stellar_mass_list = stellar_mass
             L_filters_mat = np.array(L_filters_list).T
             L_EL_mat = np.array(L_EL_list).T
             spec_interpolate_mat = np.array(spec_interpolate).T
         else:
-            stellar_mass_list = np.append(stellar_mass_list, stellar_mass)
             L_filters_mat = np.vstack([L_filters_mat, np.array(L_filters_list).T])
             L_EL_mat = np.vstack([L_EL_mat, np.array(L_EL_list).T])
             spec_interpolate_mat = np.vstack([spec_interpolate_mat, np.array(spec_interpolate).T])
     # add to hdf5 file
     if (ii_model == 0):
-        grp_lum.create_dataset('stellar_mass', data=stellar_mass_list)
         grp_spec_lum.create_dataset('wavelength', data=wavelength_interpolate)
     subgrp_FilL_lum = grp_FilL_lum.create_dataset('luminosity_' + str(ii_model), data=L_filters_mat)
     subgrp_EmL_lum = grp_EmL_lum.create_dataset('luminosity_' + str(ii_model), data=L_EL_mat)
