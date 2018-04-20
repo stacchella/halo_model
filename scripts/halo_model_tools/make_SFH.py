@@ -118,8 +118,12 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         mgas = 10**Mgas_Mstar_relation(z_center[idx], mstar)*mstar
         lam = lam10*(mstar/10**10)**(-0.33)
         dt = 10**6*(time_bins[idx+1]-time_bins[idx])
-        mZ_list = np.append(mZ_list, mZ_list[-1]+dt*get_dZ(SFR[idx], dmgas_dt[idx], Z_list[-1], Z0, R, y, lam))
-        Z_list = np.append(Z_list, mZ_list[-1]/mgas)
+        dZ = dt*get_dZ(SFR[idx], dmgas_dt[idx], Z_list[-1], Z0, R, y, lam)
+        if np.isnan(dZ):
+            mZ_list = np.append(mZ_list, mZ_list[-1])
+        else:
+            mZ_list = np.append(mZ_list, mZ_list[-1]+dZ)
+    Z_list = np.append(Z_list, mZ_list[-1]/mgas)
     return(time_high_resolution, SFR_final, mZ_list[1:], Z_list[1:])
 
 
