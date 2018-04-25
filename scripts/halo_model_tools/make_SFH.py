@@ -34,7 +34,7 @@ def Mgas_Mstar_relation(redshift, Mstar):
     A = np.random.normal(loc=-1.25, scale=0.03)
     B = np.random.normal(loc=2.6, scale=0.25)
     D = np.random.normal(loc=-0.36, scale=0.03)
-    log_MgasMstar = A + B*np.log10(1.0+redshift) + D*(np.log10(Mstar)-10.7)
+    log_MgasMstar = A + B*np.log10(1.0+redshift) + D*(np.log10(Mstar)-0.3-10.7)
     return(np.min([3.0, log_MgasMstar]))
 
 

@@ -22,8 +22,8 @@ logbook of runs:
 
 
 - calibration run:  run SFR=1 in order to get a first guess on efficency
-    sbatch --array=1-100 submission_script_calibration_SFH.sh
-    python summarize_all_SFH_runs.py --number_of_bins 100 --filename_SFH SFH_z4_calibration.hdf5 --redshift 4
+    sbatch --array=1-200 submission_script_calibration_SFH.sh
+    python summarize_all_SFH_runs.py --number_of_bins 200 --filename_SFH SFH_z4_calibration.hdf5 --redshift 4
     sbatch --array=1-200 submission_script_calibration_SP.sh
     python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_calibration.hdf5 --filename_SP snapshot_z4_calibration.hdf5
 
