@@ -35,7 +35,7 @@ def Mgas_Mstar_relation(redshift, Mstar):
     B = np.random.normal(loc=2.6, scale=0.25)
     D = np.random.normal(loc=-0.36, scale=0.03)
     log_MgasMstar = A + B*np.log10(1.0+redshift) + D*(np.log10(Mstar)-10.7)
-    return(np.min([2.5, log_MgasMstar]))
+    return(np.min([3.0, log_MgasMstar]))
 
 
 def get_dZ(SFR, dmgas_dt, Z, Z0, R, y, lam):
@@ -79,12 +79,13 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     epsilon_list = []
     SFR_list = []  # in Msun/yr
     for ii_bin in range(len(time_center)):
+        time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
         # low resolution regime
-        if (time_bins[-1]-time_center[ii_bin] > 200.0):
-            time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
+        #if (time_bins[-1]-time_center[ii_bin] > 200.0):
+        #    time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
         # high resolution regime
-        else:
-            time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_high_res)
+        #else:
+        #    time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_high_res)
         time_high_resolution = np.append(time_high_resolution, time_now)
         dmgas_dt = cosmo.Ob0/cosmo.Om0*dM_final[ii_bin]/(10**6*(time_bins[ii_bin+1]-time_bins[ii_bin]))
         epsilon_list = np.append(epsilon_list, 10**epsilon_fct(np.log10(M_growth[ii_bin])))
@@ -107,7 +108,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         SFR_final = SFR_list_shifted.copy()
     SFR_final[~np.isfinite(SFR_final)] = 0.0
     # compute Z evolution
-    mZ_list = np.array([10**2])
+    mZ_list = np.array([10**0])
     SFR = np.interp(time_bins, time_high_resolution, SFR_final, left=SFR_final[0], right=SFR_final[-1])
     epsilon_list[~np.isfinite(epsilon_list) | (epsilon_list <= 0.0)] = 10**-4
     epsilon_list = np.append(10**-4, epsilon_list)
