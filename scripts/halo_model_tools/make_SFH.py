@@ -54,9 +54,12 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     t_snapshots : age of the universe of snapshots
     SFH_type    : type of star formation history in the last, most recent time bins
                   options: constant, random
+                  => currently not implemented
     epsilon_fct : efficency function that depends on halo mass
     dt_low_res  : time spacing at early times
+                  => currently not implemented
     dt_high_res : time spacing at late times
+                  => currently not implemented
     time_delay  : time delay of DM accretion to baryons in galaxy (fraction of t_H)
     specific_growth_threshold  : threshold of maximum accretion
     '''
@@ -75,41 +78,21 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
     # smooth dM_final
     dM_final = convolve(dM_final, Gaussian1DKernel(stddev=time_smoothing*time_center[-1]/np.diff(time_center)[-1]))
     # iterate over time
-    time_high_resolution = []
     epsilon_list = []
     SFR_list = []  # in Msun/yr
     for ii_bin in range(len(time_center)):
-        time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
-        # low resolution regime
-        #if (time_bins[-1]-time_center[ii_bin] > 200.0):
-        #    time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_low_res)
-        # high resolution regime
-        #else:
-        #    time_now = np.arange(time_bins[ii_bin], time_bins[ii_bin+1], dt_high_res)
-        time_high_resolution = np.append(time_high_resolution, time_now)
         dmgas_dt = cosmo.Ob0/cosmo.Om0*dM_final[ii_bin]/(10**6*(time_bins[ii_bin+1]-time_bins[ii_bin]))
         epsilon_list = np.append(epsilon_list, 10**epsilon_fct(np.log10(M_growth[ii_bin])))
-        SFR_list = np.append(SFR_list, epsilon_list[-1]*dmgas_dt*np.ones(len(time_now)))
+        SFR_list = np.append(SFR_list, epsilon_list[-1]*dmgas_dt)
     # add time delay
-    time_vector_shift = time_delay*time_high_resolution
-    SFR_list_shifted = np.interp(time_high_resolution, time_high_resolution+time_vector_shift, SFR_list, left=0.0, right=0.0)
+    time_vector_shift = time_delay*time_center
+    SFR_list_shifted = np.interp(time_center, time_center+time_vector_shift, SFR_list, left=0.0, right=0.0)
     # add special featured SFR
-    if (SFH_type == 'random'):
-        # re-distribute accretion rate in past 15 Myr
-        idx_recent_past = (time_high_resolution > time_high_resolution[-1]-15)
-        mass_formed = np.trapz(SFR_list_shifted[idx_recent_past], 10**6*time_high_resolution[idx_recent_past])
-        mu_SFR = np.random.choice(time_high_resolution[idx_recent_past])
-        sig_SFR = 20.0*np.random.random(1)
-        SFR = model_SFH(time_high_resolution, mass_formed, mu_SFR, sig_SFR)
-        SFR_final = SFR_list_shifted.copy()
-        SFR_final[idx_recent_past] = 0.0
-        SFR_final += SFR
-    elif (SFH_type == 'constant'):
-        SFR_final = SFR_list_shifted.copy()
+    SFR_final = SFR_list_shifted.copy()
     SFR_final[~np.isfinite(SFR_final)] = 0.0
     # compute Z evolution
     mZ_list = np.array([10**0])
-    SFR = np.interp(time_bins, time_high_resolution, SFR_final, left=SFR_final[0], right=SFR_final[-1])
+    SFR = np.interp(time_bins, time_center, SFR_final, left=SFR_final[0], right=SFR_final[-1])
     epsilon_list[~np.isfinite(epsilon_list) | (epsilon_list <= 0.0)] = 10**-4
     epsilon_list = np.append(10**-4, epsilon_list)
     dmgas_dt = SFR/epsilon_list
@@ -125,6 +108,7 @@ def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None
         else:
             mZ_list = np.append(mZ_list, mZ_list[-1]+dZ)
     Z_list = np.append(Z_list, mZ_list[-1]/mgas)
-    return(time_high_resolution, SFR_final, mZ_list[1:], Z_list[1:])
+    return(time_center, SFR_final, mZ_list[1:], Z_list[1:])
+
 
 
