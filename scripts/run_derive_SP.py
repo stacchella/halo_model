@@ -199,9 +199,9 @@ for ii_model in range(len(dict_all_combinations)):
         print 'progress (%): ', round(100.0*c/len(idx_halo_considered), 3)
         c += 1
         if (model_dict['logzsol'] > -10.0):
-            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate)
+            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, interpolation_SFH=True, dt=0.001)
         else:
-            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, Z_in=SFH_Z[ii][-1])
+            L_filters_list, L_EL_list, spec_interpolate = derive_SP_prop.get_luminosities_for_SFH(sp_now, [10**-3*SFH_time[::idx_every_other], SFH_SFR[ii][::idx_every_other]], tage_now, idx_EL, wavelength_interpolate, interpolation_SFH=True, dt=0.001, Z_in=SFH_Z[ii][-1])
         if (ii == idx_halo_considered[0]):
             L_filters_mat = np.array(L_filters_list).T
             L_EL_mat = np.array(L_EL_list).T

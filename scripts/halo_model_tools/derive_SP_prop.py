@@ -7,14 +7,20 @@ import numpy as np
 
 Zsun = 0.0143
 
-def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate, Z_in=None):
+def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate, interpolation_SFH=False, dt=0.001, Z_in=None):
     '''
     Function computes Ha and UV luminosities for certain SFH.
     - SFH_in    : 2xN array with age and SFR
     - age_in    : age where compute spectrum, in Gyr
+    - dt        : interpolation in Gyr
     '''
     # set SFH
-    sp_in.set_tabular_sfh(SFH_in[0], SFH_in[1], Z=None)
+    if interpolation_SFH:
+        time_high_res = np.arange(0.0, np.max(SFH_in[0]), dt)
+        SFH_high_res = np.interp(time_high_res, SFH_in[0], SFH_in[1])
+        sp_in.set_tabular_sfh(time_high_res, SFH_high_res, Z=None)
+    else:
+        sp_in.set_tabular_sfh(SFH_in[0], SFH_in[1], Z=None)
     # update Z:
     if Z_in:
         sp_in.params['logzsol'] = np.log10(Z_in/Zsun)
