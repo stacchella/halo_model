@@ -53,6 +53,15 @@ python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z15_Z_fi
 python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z16_Z_fid_02.hdf5 --filename_SP snapshot_z16_Z_fid_02.hdf5
 
 
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z4_Z_evo_02.hdf5 --filename_SP snapshot_z4_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z6_Z_evo_02.hdf5 --filename_SP snapshot_z6_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z8_Z_evo_02.hdf5 --filename_SP snapshot_z8_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z10_Z_evo_02.hdf5 --filename_SP snapshot_z10_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z12_Z_evo_02.hdf5 --filename_SP snapshot_z12_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z14_Z_evo_02.hdf5 --filename_SP snapshot_z14_Z_evo_02.hdf5
+python summarize_all_SP_runs.py --number_of_bins 200 --filename_SFH SFH_z16_Z_evo_02.hdf5 --filename_SP snapshot_z16_Z_evo_02.hdf5
+
+
 - tunning run:		change high end of efficiency in order to match UV LF
 					we run this 3 times, each time with different metallicity (Zsun, 0.2Zsun, 0.02Zsun) but with same IMF (Salpeter IMF)
 					0.02 Zsun: run_tunning_Z_low_XX.hdf5

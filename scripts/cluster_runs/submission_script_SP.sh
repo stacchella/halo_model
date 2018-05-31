@@ -9,7 +9,7 @@
 ### Partition or queue name
 #SBATCH -p conroy
 ### memory per cpu, in MB
-#SBATCH --mem-per-cpu=64000
+#SBATCH --mem-per-cpu=4000
 ### Job name
 #SBATCH -J 'SP_z4_Z_fid_06'
 ### output and error logs
