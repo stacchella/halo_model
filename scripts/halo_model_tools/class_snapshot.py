@@ -121,7 +121,7 @@ class snapshot:
         logOH = np.log10(self.get_Z(exclude_contam_halos=exclude_contam_halos))+conversion
         return(logOH)
 
-    def get_spectrum(self, idx=None, SP_param_nr='4'):
+    def get_spectrum(self, idx=None, SP_param_nr='4', exclude_contam_halos=True):
         '''
         Returns emission line luminosity.
 
@@ -136,6 +136,10 @@ class snapshot:
           metallicity.
           fiducial: '4'
 
+        exclude_contam_halos : bool
+          Exclude contaminated halos.
+          fiducial: True
+
         Returns
         -------
         wavelength : np.array
@@ -145,8 +149,12 @@ class snapshot:
           Spectral energy density in Lsun/Hz.
 
         '''
+        if exclude_contam_halos:
+            idx_new = ~self.get_contaminated_halos() & idx
+        else:
+            idx_new = (np.ones(len(passband_lum)) == 1.0) & idx
         wavelength = self.data['SP/spec/wavelength'][:]
-        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx]
+        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx_new]
         return(wavelength, spectrum)
 
     def get_EmL_lum(self, emission_line='L_Ha', SP_param_nr='4', exclude_contam_halos=True):
