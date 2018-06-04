@@ -151,7 +151,7 @@ class snapshot:
         else:
             idx = (np.ones(len(passband_lum)) == 1.0)
         wavelength = self.data['SP/spec/wavelength'][:]
-        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx]
+        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx, :]
         return(wavelength, spectrum)
 
     def get_EmL_lum(self, emission_line='L_Ha', SP_param_nr='4', exclude_contam_halos=True):
