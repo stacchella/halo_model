@@ -121,15 +121,12 @@ class snapshot:
         logOH = np.log10(self.get_Z(exclude_contam_halos=exclude_contam_halos))+conversion
         return(logOH)
 
-    def get_spectrum(self, idx=None, SP_param_nr='4', exclude_contam_halos=True):
+    def get_spectrum(self, SP_param_nr='4', exclude_contam_halos=True):
         '''
         Returns emission line luminosity.
 
         Parameters
         ----------
-        idx : int
-          Specifices the index of the galaxy.
-
         SP_param_nr : str
           Stellar population parameter number that
           defines choice of initial mass function,
@@ -150,11 +147,11 @@ class snapshot:
 
         '''
         if exclude_contam_halos:
-            idx_new = ~self.get_contaminated_halos() & idx
+            idx = ~self.get_contaminated_halos()
         else:
-            idx_new = (np.ones(len(passband_lum)) == 1.0) & idx
+            idx = (np.ones(len(passband_lum)) == 1.0)
         wavelength = self.data['SP/spec/wavelength'][:]
-        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx_new]
+        spectrum = self.data['SP/spec/luminosity_' + SP_param_nr][idx]
         return(wavelength, spectrum)
 
     def get_EmL_lum(self, emission_line='L_Ha', SP_param_nr='4', exclude_contam_halos=True):
