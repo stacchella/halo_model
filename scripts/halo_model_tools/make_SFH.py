@@ -45,7 +45,7 @@ def get_dZ(SFR, dmgas_dt, Z, Z0, R, y, lam):
     return((y*(1.0-R)-Z*(1.0-R+lam))*SFR+Z0*dmgas_dt)
 
 
-def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, time_smoothing=0.05, specific_growth_threshold=0.5, Z0=0.0143*10**-3, R=0.1, y=0.023, lam10=0.4):
+def construct_SFH(mass_growth_list, t_snapshots, SFH_type=None, epsilon_fct=None, dt_high_res=0.1, dt_low_res=20.0, time_delay=0.1, time_smoothing=0.02, specific_growth_threshold=1.0, Z0=0.0143*10**-3, R=0.1, y=0.023, lam10=0.4):
     '''
     This function constructs SFH (time since Big Bang in Myr and SFR) for a given mass growth list
     and snapshot times.
