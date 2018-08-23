@@ -7,23 +7,23 @@
 ### Requested computing time in minutes
 #SBATCH -t 10080
 ### Partition or queue name
-#SBATCH -p conroy
+#SBATCH -p conroy-intel,conroy,itc_cluster,general,hernquist,serial_requeue
 ### memory per cpu, in MB
 #SBATCH --mem-per-cpu=4000
 ### Job name
-#SBATCH -J 'SFH_z4_Z_fid_06'
+#SBATCH -J 'SFH_z4_Z_fid_02_withoutT'
 ### output and error logs
-#SBATCH -o SFH_z4_Z_fid_06_%a.out
-#SBATCH -e SFH_z4_Z_fid_06_%a.err
+#SBATCH -o SFH_z4_Z_fid_02_%a.out
+#SBATCH -e SFH_z4_Z_fid_02_%a.err
 ### mail
 #SBATCH --mail-type=END
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
 srun -n 1 python /n/eisenstein_lab/Users/stacchella/halo_model/scripts/run_make_SFH.py \
---number_of_bins=400 \
+--number_of_bins=200 \
 --idx_halo_key="${SLURM_ARRAY_TASK_ID}" \
 --SFH_type="constant" \
---filename_SFH="SFH_z4_Z_fid_06.hdf5" \
+--filename_SFH="SFH_z4_Z_fid_02_withoutT.hdf5" \
 --redshift=4 \
 --calibration_run="False" \
---filename_efficiency="calibration/epsilon_constant_param_0.6.npy" \
+--filename_efficiency="calibration/epsilon_constant_param_0.2.npy" \

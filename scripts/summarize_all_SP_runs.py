@@ -110,6 +110,7 @@ dict_spec_data = {}
 dict_lum_data = {}
 
 for ii_file in range(number_of_bins):
+    print ii_file
     SP_file = h5py.File(path_SP_cat + '/' + args.filename_SP[:-5] + '/' + args.filename_SP[:-5] + '_' + str(ii_file) + '.hdf5', 'r')
     if (ii_file == 0):
         for ii_key in SP_file['SP/FilL'].keys():
