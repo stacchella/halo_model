@@ -113,7 +113,7 @@ if (args.calibration_run == 'True'):
     logzsol_grid = [-1.7, -99.0]
     IMF_grid = [0]
 else:
-    logzsol_grid = [0.0, -0.52, -1.0, -1.7, -3.0, -99.0]
+    logzsol_grid = [0.0, -1.0, -1.7, -3.0, -99.0]
     IMF_grid = [0, 1]
 
 iterables = [logzsol_grid, IMF_grid]
