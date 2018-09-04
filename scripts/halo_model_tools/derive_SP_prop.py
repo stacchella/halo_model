@@ -18,9 +18,12 @@ def get_luminosities_for_SFH(sp_in, SFH_in, age_in, idx_EL, wave_interpolate, in
     if interpolation_SFH:
         time_high_res = np.arange(0.0, np.max(SFH_in[0]), dt)
         SFH_high_res = np.interp(time_high_res, SFH_in[0], SFH_in[1])
+        SFH_high_res[SFH_high_res < 2e-33] = 2e-33
         sp_in.set_tabular_sfh(time_high_res, SFH_high_res, Z=None)
     else:
-        sp_in.set_tabular_sfh(SFH_in[0], SFH_in[1], Z=None)
+        SFH = SFH_in[1]
+        SFH[SFH < 2e-33] = 2e-33
+        sp_in.set_tabular_sfh(SFH_in[0], SFH, Z=None)
     # update Z:
     if Z_in:
         sp_in.params['logzsol'] = np.log10(Z_in/Zsun)
