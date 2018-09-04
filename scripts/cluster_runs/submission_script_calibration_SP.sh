@@ -7,9 +7,9 @@
 ### Requested computing time in minutes
 #SBATCH -t 10080
 ### Partition or queue name
-#SBATCH -p conroy
+#SBATCH -p itc_cluster
 ### memory per cpu, in MB
-#SBATCH --mem-per-cpu=64000
+#SBATCH --mem-per-cpu=4000
 ### Job name
 #SBATCH -J 'SP_z4_calibration'
 ### output and error logs

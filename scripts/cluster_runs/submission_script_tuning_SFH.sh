@@ -7,7 +7,7 @@
 ### Requested computing time in minutes
 #SBATCH -t 10080
 ### Partition or queue name
-#SBATCH -p conroy
+#SBATCH -p itc_cluster
 ### memory per cpu, in MB
 #SBATCH --mem-per-cpu=4000
 ### Job name
@@ -20,7 +20,7 @@
 #SBATCH --mail-user=sandro.tacchella@cfa.harvard.edu
 source activate pro
 srun -n 1 python /n/eisenstein_lab/Users/stacchella/halo_model/scripts/run_make_SFH.py \
---number_of_bins=400 \
+--number_of_bins=200 \
 --idx_halo_key="${SLURM_ARRAY_TASK_ID}" \
 --SFH_type="constant" \
 --filename_SFH="SFH_z4_Z_fid_06.hdf5" \
