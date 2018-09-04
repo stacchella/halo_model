@@ -2,12 +2,18 @@ import numpy as np
 from scipy.optimize import fsolve
 
 
-def remove_dust_attenuation(magUV_in, redshift_in, with_scatter=False):
+def remove_dust_attenuation(magUV_in, dust_type, redshift_in, with_scatter=False):
     '''
     This function removes the dust attenuation / performs
     the dust attenuation correction by computing the
     dust attenuation at 1600 A (A1600) from the
     Bouwens et al 2015 relation.
+
+    dust_type (str):
+        Meurer+99
+        Calzetti+00
+        Reddy+15
+        Gordon+03 (SMC)
     '''
     # ensure inputs are arrays
     if type(magUV_in) is not np.ndarray:
@@ -26,10 +32,25 @@ def remove_dust_attenuation(magUV_in, redshift_in, with_scatter=False):
     # get average beta
     avg_b = dbdM_value*(magUV_in+19.5) + beta_value
     # convert beta to A1600
+    # see Table 3 of Reddy+18
+    if dust_type not in ['Meurer+99', 'Calzetti+00', 'Reddy+15', 'Gordon+03']:
+        print 'NOT KNOWN DUST TYPE (IRX-beta)!'
+    if (dust_type == 'Meurer+99'):
+        a_dust = 1.99
+        b_dust = 4.43
+    elif (dust_type == 'Calzetti+00'):
+        a_dust = 2.13
+        b_dust = 5.57
+    elif (dust_type == 'Reddy+15'):
+        a_dust = 1.82
+        b_dust = 4.47
+    elif (dust_type == 'Gordon+03'):
+        a_dust = 1.07
+        b_dust = 2.79
     if with_scatter:
-        A1600 = 4.43 + 1.99*(avg_b + np.random.normal(loc=0.0, scale=0.34, size=len(avg_b)))
+        A1600 = b_dust + a_dust*(avg_b + np.random.normal(loc=0.0, scale=0.34, size=len(avg_b)))
     else:
-        A1600 = 4.43 + 0.2*np.log(10)*1.99**2*0.34**2+1.99*avg_b
+        A1600 = b_dust + 0.2*np.log(10)*a_dust**2*0.34**2+a_dust*avg_b
     A1600[np.isnan(A1600)] = np.zeros(np.sum(np.isnan(A1600)))
     A1600[A1600 < 0.0] = np.zeros(np.sum(A1600 < 0.0))
     magUV_without_dust = magUV_in - A1600
@@ -58,19 +79,19 @@ def remove_dust_attenuation(magUV_in, redshift_in, with_scatter=False):
 #     return(magUV_without_dust)
 
 
-def fct_solve(mag_with_dust, mag_without_dust, redshift):
+def fct_solve(mag_with_dust, mag_without_dust, dust_type, redshift):
     '''
     Define function to minimize.
     '''
-    return(mag_without_dust-remove_dust_attenuation(mag_with_dust, redshift))
+    return(mag_without_dust-remove_dust_attenuation(mag_with_dust, dust_type, redshift))
 
 
-def add_dust_attenuation(magUV_in, redshift_in, with_scatter=False):
+def add_dust_attenuation(magUV_in, dust_type, redshift_in, with_scatter=False):
     '''
     Adds dust according to the Bouwens et al 2015 relation.
     '''
     mag_list = np.linspace(-30.0, -10.0)
-    mag_list_with_dust = fsolve(fct_solve, mag_list, args=(mag_list, redshift_in))
+    mag_list_with_dust = fsolve(fct_solve, mag_list, args=(mag_list, dust_type, redshift_in))
     mag_with_dust = np.interp(magUV_in, mag_list, mag_list_with_dust)
     return(mag_with_dust)
 
@@ -114,7 +135,7 @@ def calzetti(wave, tau_v=1, R_v=4.05, **kwargs):
 
     # do it
     x = 1e4 / wave
-    ktot =  oinds * (k1(x) + R_v)
+    ktot = oinds * (k1(x) + R_v)
     ktot += uinds * (k2(x) + R_v)
     ktot += xinds * (kuv[0] + (wave - uv[0]) * uv_slope)
     ktot += iinds * (kir[1] + (wave - ir[1]) * ir_slope)

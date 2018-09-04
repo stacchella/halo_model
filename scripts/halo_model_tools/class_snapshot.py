@@ -2,6 +2,7 @@ import numpy as np
 import h5py
 import completeness
 import dust_attenuation
+import cosmology_conversion
 
 
 class snapshot:
@@ -190,7 +191,7 @@ class snapshot:
             idx = (np.ones(len(line_luminosity)) == 1.0)
         return(line_luminosity[idx])
 
-    def get_band_lum(self, passband='i1500', SP_param_nr='4', add_dust=False, exclude_contam_halos=True):
+    def get_band_lum(self, passband='i1500', SP_param_nr='4', dust_type='Meurer+99', add_dust=False, exclude_contam_halos=True):
         '''
         Returns luminosity in a certain passband.
 
@@ -205,6 +206,11 @@ class snapshot:
           defines choice of initial mass function,
           metallicity.
           fiducial: '4'
+
+        dust_type : str
+          Choose IRX-beta relation. Choices include
+          Meurer+99, Calzetti+00, Reddy+15, Gordon+03 (SMC)
+          fiducial: 'Meurer+99'
 
         add_dust : bool
           Add dust to UV (ONLY UV 1500)
@@ -226,7 +232,7 @@ class snapshot:
         passband_lum = self.data['SP/FilL/luminosity_' + SP_param_nr][:, idx_passband].flatten()
         if (add_dust):
             mag_list_UV = -48.6-2.5*np.log10(self.data['SP/FilL/luminosity_' + SP_param_nr][:, (self.data['SP/FilL'].attrs['FL_info'] == 'i1500')].flatten()/(4*np.pi*(3.086e+19)**2))
-            AUV_list = dust_attenuation.add_dust_attenuation(mag_list_UV, self.redshift)-(mag_list_UV)
+            AUV_list = dust_attenuation.add_dust_attenuation(mag_list_UV, dust_type, self.redshift)-(mag_list_UV)
             mag_list = -48.6-2.5*np.log10(passband_lum/(4*np.pi*(3.086e+19)**2))
             mag_list_d = mag_list+AUV_list/dust_attenuation.calzetti(1500.0, tau_v=1, R_v=4.05)*dust_attenuation.calzetti(wave_dict[passband], tau_v=1, R_v=4.05)
             passband_lum = (4*np.pi*(3.086e+19)**2)*10.0**(-1.0/2.5*(mag_list_d+48.6))
@@ -559,7 +565,7 @@ class snapshot:
         SFR_list = np.log10(self.get_SFR(time_interval, exclude_contam_halos=exclude_contam_halos))
         idx_good = np.isfinite(SFR_list)
         SFR_list = SFR_list[idx_good]
-        SFR_bins = np.arange(np.max([-2.0, np.min(SFR_list)]), np.min([3.0, np.max(SFR_list)]), bin_size)
+        SFR_bins = np.arange(np.max([-3.0, np.min(SFR_list)]), np.min([3.0, np.max(SFR_list)]), bin_size)
         SFR_bins_center = SFR_bins[:-1] + 0.5*np.diff(SFR_bins)
         if completeness_correction:
             if (completeness_correction_type == 'numerical'):
@@ -576,7 +582,7 @@ class snapshot:
             SFR_Fct = hist/(np.diff(SFR_bins)*volume_box)
             return(SFR_bins_center, SFR_Fct)
 
-    def compute_UVLF(self, SP_param_nr='4', volume_box=100.0**3, bin_size=0.25, cumulative=False, add_dust=False, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized'):
+    def compute_UVLF(self, SP_param_nr='4', volume_box=100.0**3, bin_size=0.25, cumulative=False, dust_type='Meurer+99', add_dust=False, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized'):
         '''
         Computes UV luminosity function (UVLF).
 
@@ -600,6 +606,11 @@ class snapshot:
           Compute cumulative, n(>Muv), or non-cumulative,
           dn/dMuv, UV luminosity function.
           fiducial: False
+
+        dust_type : str
+          Choose IRX-beta relation. Choices include
+          Meurer+99, Calzetti+00, Reddy+15, Gordon+03 (SMC)
+          fiducial: 'Meurer+99'
 
         add_dust : bool
           Add dust attenuation to UV.
@@ -642,7 +653,7 @@ class snapshot:
             weights = None
         hist, bin_edges = np.histogram(mag_list, bins=mag_bins, weights=weights)
         if add_dust:
-            mag_bins_center_d = dust_attenuation.add_dust_attenuation(mag_bins_center, self.redshift)
+            mag_bins_center_d = dust_attenuation.add_dust_attenuation(mag_bins_center, dust_type, self.redshift)
         else:
             mag_bins_center_d = mag_bins_center
         if cumulative:
@@ -652,7 +663,7 @@ class snapshot:
             LF = hist/(np.diff(mag_bins)*volume_box)
             return(mag_bins_center_d, LF)
 
-    def compute_EmLLF(self, emission_line='L_Ha', SP_param_nr='4', volume_box=100.0**3, bin_size=0.25, cumulative=False, add_dust=False, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized'):
+    def compute_EmLLF(self, emission_line='L_Ha', SP_param_nr='4', volume_box=100.0**3, bin_size=0.25, cumulative=False, dust_type='Meurer+99', add_dust=False, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized'):
         '''
         Computes emission line luminosity function (EmLLF).
 
@@ -682,6 +693,11 @@ class snapshot:
           Compute cumulative, n(>Muv), or non-cumulative,
           dn/dMuv, UV luminosity function.
           fiducial: False
+
+        dust_type : str
+          Choose IRX-beta relation. Choices include
+          Meurer+99, Calzetti+00, Reddy+15, Gordon+03 (SMC)
+          fiducial: 'Meurer+99'
 
         add_dust : bool
           Add dust attenuation to UV.
@@ -724,7 +740,7 @@ class snapshot:
             weights = None
         hist, bin_edges = np.histogram(lum_list, bins=lum_bins, weights=weights)
         if add_dust:
-            lum_bins_center_d = dust_attenuation.add_dust_attenuation_Ha(lum_bins_center, self.redshift)
+            lum_bins_center_d = dust_attenuation.add_dust_attenuation_Ha(lum_bins_center, dust_type, self.redshift)
         else:
             lum_bins_center_d = lum_bins_center
         if cumulative:
@@ -734,7 +750,7 @@ class snapshot:
             LF = hist/(np.diff(lum_bins)*volume_box)
             return(lum_bins_center_d, LF)
 
-    def compute_cSFRD(self, SFR_limit_in=0.3, time_interval=200.0, volume_box=100.0**3, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized'):
+    def compute_cSFRD(self, SFR_limit_in=0.3, time_interval=200.0, volume_box=100.0**3, exclude_contam_halos=True, completeness_correction=False, completeness_correction_type='parameterized', cosmology_type='WMAP'):
         '''
         Computes cosmic star-formation rate density.
 
@@ -781,6 +797,13 @@ class snapshot:
                 weights = 10**completeness.get_completeness_correction_parametrized(np.log10(self.get_halo_mass(exclude_contam_halos=exclude_contam_halos)[idx]), self.redshift)
         else:
             weights = 1.0
+        if (cosmology_type == 'WMAP'):
+            weights *= 1.0
+        elif (cosmology_type == 'Planck'):
+            Mh, nW, nP = cosmology_conversion.compute_HMF(self.redshift)
+            nW_list = np.interp(self.get_halo_mass(exclude_contam_halos=exclude_contam_halos)[idx], Mh, nW)
+            nP_list = np.interp(self.get_halo_mass(exclude_contam_halos=exclude_contam_halos)[idx], Mh, nP)
+            weights *= nP_list/nW_list
         total_SFR = np.sum(weights*SFR_list[idx])
         total_SFRD = total_SFR/volume_box
         return(total_SFRD)
