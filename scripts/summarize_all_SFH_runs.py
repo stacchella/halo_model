@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
 parser.add_argument("--redshift", type=int, help="redshift")
-parser.add_argument("--DM_kind", type=int, help="DM kind (CDM or WDM)")
+parser.add_argument("--DM_kind", type=str, help="DM kind (CDM or WDM)")
 args = parser.parse_args()
 
 number_of_bins = args.number_of_bins
