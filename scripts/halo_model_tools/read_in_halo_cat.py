@@ -14,23 +14,23 @@ path_main = os.environ['WDIR_halo_model']
 path_DM_cat = path_main + 'catalogs/DM/'
 
 
-def get_DM_file(redshift):
+def get_DM_file(redshift, DM_kind):
     '''
     Get DM filename from redshift.
     '''
-    DM_cat_name_list = glob.glob(path_DM_cat + '*.hdf5')
+    DM_cat_name_list = glob.glob(path_DM_cat + '*' + DM_kind + '*.hdf5')
     redshift_list = []
     for ii_name in DM_cat_name_list:
         redshift_list = np.append(redshift_list, float(ii_name.split('_')[-2][1:]))
     return(DM_cat_name_list[np.abs(redshift_list-redshift).argmin()])
 
 
-def read_in_halo_cat(redshift, cosmo_in):
+def read_in_halo_cat(redshift, DM_kind, cosmo_in):
     '''
     Reads in and manipulates dark matter halo accretion history.
     '''
     # read in catalog
-    file_name = get_DM_file(redshift)
+    file_name = get_DM_file(redshift, DM_kind)
     file_read = h5py.File(file_name, 'r')   # 'r' means that hdf5 file is open in read-only mode
     z_table_zX = file_read['Subhaloes/redshift'][:]
     M_table_zX = file_read['Subhaloes/nodeMass'][:]
