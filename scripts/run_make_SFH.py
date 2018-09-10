@@ -35,6 +35,7 @@ parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
 parser.add_argument("--redshift", type=int, help="redshift")
 parser.add_argument("--calibration_run", type=str, help="True or False")
 parser.add_argument("--filename_efficiency", type=str, help="filename of efficiency file")
+parser.add_argument("--DM_kind", type=str, help="DM kind (CDM or WDM)")
 args = parser.parse_args()
 
 
@@ -49,7 +50,7 @@ run_params = {'number_of_bins': args.number_of_bins,  # this gives number of cor
 
 # get dark matter accretion history, remove contaminated halos
 
-z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, args.DM_kind, cosmo)
 
 
 print len(z_table_in)

@@ -30,6 +30,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
 parser.add_argument("--redshift", type=int, help="redshift")
+parser.add_argument("--DM_kind", type=int, help="DM kind (CDM or WDM)")
 args = parser.parse_args()
 
 number_of_bins = args.number_of_bins
@@ -68,7 +69,7 @@ time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.fil
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, args.DM_kind, cosmo)
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
