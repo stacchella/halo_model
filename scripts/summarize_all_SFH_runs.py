@@ -69,7 +69,7 @@ time_list = np.load(path_SFH_cat + '/' + args.filename_SFH[:-5] + '/' + args.fil
 
 # get dark matter accretion history
 
-z_table_in, M_table_in, Mt_table_in, is_contam = read_in_halo_cat.read_in_halo_cat(args.redshift, args.DM_kind, cosmo)
+z_table_in, M_table_in, Mt_table_in, is_contam, positions = read_in_halo_cat.read_in_halo_cat(args.redshift, args.DM_kind, cosmo, return_positions=True)
 
 t_snapshots = 10**3*cosmo.age(z_table_in).value  # in Myr
 
@@ -98,6 +98,7 @@ grp_DM.create_dataset('DM_z', data=z_table_in)
 grp_DM.create_dataset('DM_cont', data=is_contam)
 grp_DM.create_dataset('DM_M', data=M_table_in)
 grp_DM.create_dataset('DM_Mt', data=Mt_table_in)
+grp_DM.create_dataset('DM_pos', data=positions)
 f.close()
 
 

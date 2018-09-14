@@ -25,7 +25,7 @@ def get_DM_file(redshift, DM_kind):
     return(DM_cat_name_list[np.abs(redshift_list-redshift).argmin()])
 
 
-def read_in_halo_cat(redshift, DM_kind, cosmo_in):
+def read_in_halo_cat(redshift, DM_kind, cosmo_in, return_positions=False):
     '''
     Reads in and manipulates dark matter halo accretion history.
     '''
@@ -36,6 +36,7 @@ def read_in_halo_cat(redshift, DM_kind, cosmo_in):
     M_table_zX = file_read['Subhaloes/nodeMass'][:]
     Mt_table_zX = file_read['Subhaloes/mbpMass'][:]
     is_contam = file_read['Subhaloes/isContam'][:]
+    positions = file_read['Subhaloes/nodePos'][:]
     # convert to solar mass units
     M_table_zX = M_table_zX/cosmo_in.h
     Mt_table_zX = Mt_table_zX/cosmo_in.h
@@ -45,5 +46,8 @@ def read_in_halo_cat(redshift, DM_kind, cosmo_in):
     Mt_table_zX = np.vstack([M_table_zX, Mt_table_zX[:-1].T]).T
     # ensure same length as redshift
     Mt_table_zX = Mt_table_zX[:, :len(z_table_zX)-Mt_table_zX.shape[1]]
-    return(z_table_zX, M_table_zX, Mt_table_zX, is_contam)
+    if return_positions:
+        return(z_table_zX, M_table_zX, Mt_table_zX, is_contam, positions)
+    else:
+        return(z_table_zX, M_table_zX, Mt_table_zX, is_contam)
 
