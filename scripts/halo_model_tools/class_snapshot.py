@@ -3,6 +3,7 @@ import h5py
 import completeness
 import dust_attenuation
 import cosmology_conversion
+from astropy.cosmology import WMAP7 as cosmo
 
 
 class snapshot:
@@ -333,6 +334,29 @@ class snapshot:
         else:
             idx = (np.ones(len(SFR)) == 1.0)
         return(SFR[idx])
+
+    def get_positions(self, exclude_contam_halos=True):
+        '''
+        Returns 3D-positions of halos in comoving Mpc.
+
+        Parameters
+        ----------
+        exclude_contam_halos : bool
+          Exclude contaminated halos.
+          fiducial: True
+
+        Returns
+        -------
+        pos: float
+          Positions in comoving Mpc
+
+        '''
+        positions = self.data['DM/DM_pos'][:]/cosmo.h
+        if exclude_contam_halos:
+            idx = ~self.get_contaminated_halos()
+        else:
+            idx = (np.ones(positions.shape[0]) == 1.0)
+        return(positions[idx])
 
     def get_SFH(self, exclude_contam_halos=True):
         '''
