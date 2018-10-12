@@ -29,7 +29,7 @@ path_SFH_cat = path_main + 'catalogs/SFH/'
 parser = argparse.ArgumentParser()
 parser.add_argument("--number_of_bins", type=int, help="number of cores")
 parser.add_argument("--filename_SFH", type=str, help="filename of SFH file")
-parser.add_argument("--redshift", type=int, help="redshift")
+parser.add_argument("--redshift", type=float, help="redshift")
 parser.add_argument("--DM_kind", type=str, help="DM kind (CDM or WDM)")
 args = parser.parse_args()
 
