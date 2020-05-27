@@ -280,9 +280,9 @@ class snapshot:
         '''
         if integral_of_SFR:
             # set parameters
-            print 'calculate integral of SFR with following parameters...'
-            print 'seed mass Mseed = ', Mseed
-            print 'and return R = ', R
+            print('calculate integral of SFR with following parameters...')
+            print('seed mass Mseed = ', Mseed)
+            print('and return R = ', R)
             # load SFH for given time interval
             SFR_list = self.data['SFH/SFH_SFR'][:]
             time_list = self.data['SFH/SFH_time'][:]
@@ -291,7 +291,7 @@ class snapshot:
             # compute mass
             stellar_mass = Mseed+(1.0-R)*np.trapz(SFR_list, time_list*10**6)
         else:
-            print 'get stellar mass in stars and remnants...'
+            print('get stellar mass in stars and remnants...')
             idx_M = (self.data['SP/FilL'].attrs['FL_info'] == 'stellar_mass')
             stellar_mass = self.data['SP/FilL/luminosity_' + SP_param_nr][:, idx_M].flatten()
         if exclude_contam_halos:
@@ -319,7 +319,7 @@ class snapshot:
           SFR in Msun/yr.
 
         '''
-        print 'compute average SFR over time interval (Myr): ', time_interval
+        print('compute average SFR over time interval (Myr): ', time_interval)
         # load SFH for given time interval
         idx_time_interval = (self.data['SFH/SFH_time'][:] >= (self.data['SFH/SFH_time'][:][-1]-time_interval))
         SFR_list = self.data['SFH/SFH_SFR'][:, idx_time_interval]

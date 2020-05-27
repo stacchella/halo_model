@@ -34,7 +34,7 @@ def remove_dust_attenuation(magUV_in, dust_type, redshift_in, with_scatter=False
     # convert beta to A1600
     # see Table 3 of Reddy+18
     if dust_type not in ['Meurer+99', 'Calzetti+00', 'Reddy+15', 'Gordon+03']:
-        print 'NOT KNOWN DUST TYPE (IRX-beta)!'
+        print('NOT KNOWN DUST TYPE (IRX-beta)!')
     if (dust_type == 'Meurer+99'):
         a_dust = 1.99
         b_dust = 4.43
